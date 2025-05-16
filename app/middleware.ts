@@ -1,10 +1,16 @@
 import { NextResponse } from "next/server"
 import type { NextRequest } from "next/server"
 
+// This middleware is currently disabled to allow open access to the application
 export function middleware(request: NextRequest) {
+  // Authentication is disabled for now
+  return NextResponse.next()
+
+  // To enable authentication, uncomment the code below and set your credentials
+  /*
   const auth = request.headers.get("authorization")
-  const username = "aDy" // 🔒 Change this
-  const password = "Dbz@040791" // 🔒 Change this
+  const username = "admin" // Change this
+  const password = "password" // Change this
 
   const validAuth = "Basic " + Buffer.from(`${username}:${password}`).toString("base64")
 
@@ -18,6 +24,7 @@ export function middleware(request: NextRequest) {
       "WWW-Authenticate": 'Basic realm="Secure Area"',
     },
   })
+  */
 }
 
 // Add a matcher configuration to specify which routes the middleware applies to

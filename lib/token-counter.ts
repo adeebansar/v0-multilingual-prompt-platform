@@ -1,5 +1,7 @@
 // Simple token counting utility
 export function countTokens(text: string): number {
+  if (!text) return 0
+
   // This is a very simple approximation
   // For production, use a proper tokenizer like GPT-3 Tokenizer
   const words = text.trim().split(/\s+/)

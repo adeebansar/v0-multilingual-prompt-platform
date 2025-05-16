@@ -1,14 +1,20 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Check, ChevronsUpDown, Globe } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import { cn } from "@/lib/utils"
-import { useLanguage } from "@/components/language-provider"
+import { useLanguage, type Language } from "@/components/language-provider"
 
-const languages = [
+interface LanguageOption {
+  value: Language
+  label: string
+  rtl?: boolean
+}
+
+const languages: LanguageOption[] = [
   { value: "en", label: "English" },
   { value: "es", label: "Español" },
   { value: "fr", label: "Français" },
@@ -25,31 +31,44 @@ const languages = [
 
 export function LanguageSelector() {
   const [open, setOpen] = useState(false)
-  const { language, setLanguage } = useLanguage()
+  const { language, setLanguage, t } = useLanguage()
+  const [mounted, setMounted] = useState(false)
+
+  // Only show the correct language after mounting to prevent hydration mismatch
+  useEffect(() => {
+    setMounted(true)
+  }, [])
 
   const currentLanguage = languages.find((l) => l.value === language)
+  const displayLabel = mounted ? currentLanguage?.label : "English" // Default to English during SSR
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
-        <Button variant="outline" role="combobox" aria-expanded={open} className="w-[140px] justify-between">
+        <Button
+          variant="outline"
+          role="combobox"
+          aria-expanded={open}
+          aria-label={t("selectLanguage", "Select language")}
+          className="w-[140px] justify-between"
+        >
           <Globe className="mr-2 h-4 w-4" />
-          {currentLanguage?.label}
+          {displayLabel}
           <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-[200px] p-0">
         <Command>
-          <CommandInput placeholder="Search language..." />
+          <CommandInput placeholder={t("searchLanguage", "Search language...")} />
           <CommandList>
-            <CommandEmpty>No language found.</CommandEmpty>
+            <CommandEmpty>{t("noLanguageFound", "No language found.")}</CommandEmpty>
             <CommandGroup>
               {languages.map((lang) => (
                 <CommandItem
                   key={lang.value}
                   value={lang.value}
                   onSelect={(currentValue) => {
-                    setLanguage(currentValue as any)
+                    setLanguage(currentValue as Language)
                     setOpen(false)
                   }}
                 >

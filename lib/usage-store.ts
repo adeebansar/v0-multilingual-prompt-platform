@@ -30,35 +30,72 @@ export const useUsageStore = create<UsageStore>()(
     (set, get) => ({
       records: [],
       addUsage: (record) => {
-        set((state) => ({
-          records: [...state.records, record],
-        }))
+        try {
+          // Validate the record
+          if (!record.date || !record.model || record.totalTokens < 0 || record.estimatedCost < 0) {
+            console.error("Invalid usage record:", record)
+            return
+          }
+
+          set((state) => ({
+            records: [...state.records, record],
+          }))
+        } catch (error) {
+          console.error("Error adding usage record:", error)
+        }
       },
       clearUsage: () => {
-        set({ records: [] })
+        try {
+          set({ records: [] })
+        } catch (error) {
+          console.error("Error clearing usage records:", error)
+        }
       },
       getUsageByDate: (startDate, endDate) => {
-        return get().records.filter((record) => record.date >= startDate && record.date <= endDate)
+        try {
+          return get().records.filter((record) => record.date >= startDate && record.date <= endDate)
+        } catch (error) {
+          console.error("Error getting usage by date:", error)
+          return []
+        }
       },
       getUsageByModel: (model) => {
-        return get().records.filter((record) => record.model === model)
+        try {
+          return get().records.filter((record) => record.model === model)
+        } catch (error) {
+          console.error("Error getting usage by model:", error)
+          return []
+        }
       },
       getTotalUsage: () => {
-        return get().records.reduce(
-          (acc, record) => {
-            return {
-              promptTokens: acc.promptTokens + record.promptTokens,
-              completionTokens: acc.completionTokens + record.completionTokens,
-              totalTokens: acc.totalTokens + record.totalTokens,
-              estimatedCost: acc.estimatedCost + record.estimatedCost,
-            }
-          },
-          { promptTokens: 0, completionTokens: 0, totalTokens: 0, estimatedCost: 0 },
-        )
+        try {
+          return get().records.reduce(
+            (acc, record) => {
+              return {
+                promptTokens: acc.promptTokens + record.promptTokens,
+                completionTokens: acc.completionTokens + record.completionTokens,
+                totalTokens: acc.totalTokens + record.totalTokens,
+                estimatedCost: acc.estimatedCost + record.estimatedCost,
+              }
+            },
+            { promptTokens: 0, completionTokens: 0, totalTokens: 0, estimatedCost: 0 },
+          )
+        } catch (error) {
+          console.error("Error calculating total usage:", error)
+          return { promptTokens: 0, completionTokens: 0, totalTokens: 0, estimatedCost: 0 }
+        }
       },
     }),
     {
       name: "usage-tracking",
+      // Add error handling for storage operations
+      onRehydrateStorage: () => (state) => {
+        if (state) {
+          console.log("Usage tracking hydrated successfully")
+        } else {
+          console.error("Failed to hydrate usage tracking")
+        }
+      },
     },
   ),
 )

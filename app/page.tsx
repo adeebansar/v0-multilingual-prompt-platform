@@ -12,15 +12,16 @@ import {
   Globe,
   Sparkles,
   Layers,
-  BookCheck,
+  ClipboardCheck,
   Play,
   Star,
   ArrowRight,
   Clock,
   Workflow,
   Users,
+  type LucideIcon,
 } from "lucide-react"
-import { HeroSection } from "@/components/hero-section"
+import { HeroSection } from "@/components/hero-section/index"
 
 export default function HomePage() {
   const { translations } = useLanguage()
@@ -33,7 +34,7 @@ export default function HomePage() {
     levelKey: "intermediate",
     progress: 0,
     category: "advanced",
-    icon: Workflow,
+    Icon: Workflow,
   }
 
   const popularLessons = [
@@ -42,26 +43,27 @@ export default function HomePage() {
       titleKey: "lesson1Title",
       descriptionKey: "lesson1Desc",
       progress: 0,
-      icon: Lightbulb,
+      Icon: Lightbulb,
     },
     {
       id: 2,
       titleKey: "lesson2Title",
       descriptionKey: "lesson2Desc",
       progress: 0,
-      icon: Users,
+      Icon: Users,
     },
     {
       id: 4,
       titleKey: "lesson4Title",
       descriptionKey: "lesson4Desc",
       progress: 0,
-      icon: Layers,
+      Icon: Layers,
     },
   ]
 
   return (
     <div>
+      {/* Hero Section - Now properly code-split */}
       <HeroSection />
 
       {/* Featured Lesson Section */}
@@ -109,7 +111,7 @@ export default function HomePage() {
               <div className="relative w-full h-full max-w-[200px] max-h-[200px]">
                 <div className="absolute inset-0 bg-primary/20 rounded-full blur-3xl"></div>
                 <div className="relative flex items-center justify-center w-full h-full">
-                  <featuredLesson.icon className="h-24 w-24 text-primary" />
+                  <featuredLesson.Icon className="h-24 w-24 text-primary" />
                 </div>
               </div>
             </div>
@@ -117,78 +119,87 @@ export default function HomePage() {
         </Card>
       </section>
 
+      {/* Platform Features Section */}
       <section className="py-12 bg-muted/50">
         <div className="container px-4 md:px-6">
-          <h2 className="text-2xl font-bold text-center mb-12">{translations.platformFeatures}</h2>
+          <h2 className="text-2xl font-bold text-center mb-12">
+            {translations.platformFeatures || "Platform Features"}
+          </h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
             <FeatureCard
               icon={Globe}
-              title={translations.multilingualSupport}
-              description={translations.multilingualSupportDesc}
+              title={translations.multilingualSupport || "Multilingual Support"}
+              description={translations.multilingualSupportDesc || "Learn in your preferred language"}
               href="/settings"
             />
             <FeatureCard
               icon={BookOpen}
-              title={translations.structuredLessons}
-              description={translations.structuredLessonsDesc}
+              title={translations.structuredLessons || "Structured Lessons"}
+              description={translations.structuredLessonsDesc || "Step-by-step learning paths"}
               href="/lessons"
             />
             <FeatureCard
               icon={Play}
-              title={translations.interactivePlayground}
-              description={translations.interactivePlaygroundDesc}
+              title={translations.interactivePlayground || "Interactive Playground"}
+              description={translations.interactivePlaygroundDesc || "Experiment with AI in real-time"}
               href="/playground"
             />
             <FeatureCard
-              icon={BookCheck}
-              title={translations.knowledgeQuizzes}
-              description={translations.knowledgeQuizzesDesc}
+              icon={ClipboardCheck}
+              title={translations.knowledgeQuizzes || "Knowledge Quizzes"}
+              description={translations.knowledgeQuizzesDesc || "Test your understanding"}
               href="/quizzes"
             />
             <FeatureCard
               icon={Layers}
-              title={translations.templateLibrary}
-              description={translations.templateLibraryDesc}
+              title={translations.templateLibrary || "Template Library"}
+              description={translations.templateLibraryDesc || "Access pre-built AI templates"}
               href="/playground#templates"
             />
             <FeatureCard
               icon={Sparkles}
-              title={translations.progressTracking}
-              description={translations.progressTrackingDesc}
+              title={translations.progressTracking || "Progress Tracking"}
+              description={translations.progressTrackingDesc || "Monitor your learning journey"}
               href="/lessons"
             />
           </div>
         </div>
       </section>
 
+      {/* Popular Lessons Section */}
       <section className="py-8 container">
-        <h2 className="text-2xl font-bold mb-6">{translations.popularLessons}</h2>
+        <h2 className="text-2xl font-bold mb-6">{translations.popularLessons || "Popular Lessons"}</h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {popularLessons.map((lesson) => (
-            <Card key={lesson.id} className="flex flex-col h-full">
-              <CardHeader>
-                <div className="flex items-center justify-between">
-                  <CardTitle className="text-lg">{translations[lesson.titleKey]}</CardTitle>
-                  <lesson.icon className="h-5 w-5 text-primary" />
-                </div>
-                <CardDescription>{translations[lesson.descriptionKey]}</CardDescription>
-              </CardHeader>
-              <CardContent className="flex-grow">
-                <div className="flex items-center gap-2">
-                  <Progress value={lesson.progress} className="h-2" />
-                  <span className="text-xs text-muted-foreground">{lesson.progress}%</span>
-                </div>
-              </CardContent>
-              <CardFooter>
-                <Link href={`/lessons/${lesson.id}`} className="w-full">
-                  <Button variant="outline" className="w-full">
-                    <BookOpen className="mr-2 h-4 w-4" />
-                    {translations.startLesson}
-                  </Button>
-                </Link>
-              </CardFooter>
-            </Card>
-          ))}
+          {popularLessons.map((lesson) => {
+            const Icon = lesson.Icon
+            return (
+              <Card key={lesson.id} className="flex flex-col h-full">
+                <CardHeader>
+                  <div className="flex items-center justify-between">
+                    <CardTitle className="text-lg">{translations[lesson.titleKey] || `Lesson ${lesson.id}`}</CardTitle>
+                    <Icon className="h-5 w-5 text-primary" />
+                  </div>
+                  <CardDescription>
+                    {translations[lesson.descriptionKey] || `Description for lesson ${lesson.id}`}
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="flex-grow">
+                  <div className="flex items-center gap-2">
+                    <Progress value={lesson.progress} className="h-2" />
+                    <span className="text-xs text-muted-foreground">{lesson.progress}%</span>
+                  </div>
+                </CardContent>
+                <CardFooter>
+                  <Link href={`/lessons/${lesson.id}`} className="w-full">
+                    <Button variant="outline" className="w-full">
+                      <BookOpen className="mr-2 h-4 w-4" />
+                      {translations.startLesson || "Start Lesson"}
+                    </Button>
+                  </Link>
+                </CardFooter>
+              </Card>
+            )
+          })}
         </div>
       </section>
     </div>
@@ -201,7 +212,7 @@ function FeatureCard({
   description,
   href,
 }: {
-  icon: any
+  icon: LucideIcon
   title: string
   description: string
   href: string

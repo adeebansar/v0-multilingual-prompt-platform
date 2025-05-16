@@ -1,17 +1,17 @@
 "use client"
 
 import type React from "react"
-import { createContext, useContext, useState, useEffect } from "react"
+import { createContext, useContext, useState, useEffect, useCallback } from "react"
 
 // Add the new languages to the Language type
-type Language = "en" | "es" | "fr" | "de" | "zh" | "ja" | "ar" | "hi" | "ur" | "te" | "ta"
+export type Language = "en" | "es" | "fr" | "de" | "zh" | "ja" | "ar" | "hi" | "ur" | "te" | "ta"
 
 type LanguageContextType = {
   language: Language
   setLanguage: (language: Language) => void
   translations: Record<string, string>
   isRTL: boolean
-  t: (key: string) => string // Add t function for compatibility
+  t: (key: string, fallback: string) => string // Add fallback option
 }
 
 const defaultTranslations: Record<Language, Record<string, string>> = {
@@ -89,6 +89,54 @@ const defaultTranslations: Record<Language, Record<string, string>> = {
     min: "min",
     tryPlayground: "Try Playground",
     settings: "Settings",
+    of: "of",
+    // API and error messages
+    error: "Error",
+    apiKeyRequired: "API Key Required",
+    pleaseProvideValidApiKey: "Please provide a valid OpenAI API key.",
+    emptyPrompt: "Empty Prompt",
+    pleaseEnterPrompt: "Please enter a prompt to continue.",
+    failedToGenerateResponse: "Failed to generate response",
+    failedToReadResponse: "Failed to read response",
+    errorProcessingResponseStream: "Error processing response stream",
+    // Playground
+    prompt: "Prompt",
+    response: "Response",
+    generating: "Generating...",
+    generate: "Generate",
+    save: "Save",
+    share: "Share",
+    promptSaved: "Prompt saved",
+    promptSavedToLibrary: "Your prompt has been saved to your library.",
+    copiedToClipboard: "Copied to clipboard",
+    promptCopiedToClipboard: "Your prompt has been copied to the clipboard.",
+    promptLoaded: "Prompt loaded",
+    promptLoadedFromHistory: "Prompt loaded from history.",
+    promptDeleted: "Prompt deleted",
+    promptRemovedFromHistory: "Prompt removed from history.",
+    // Usage
+    tokens: "tokens",
+    total: "Total",
+    estimatedCost: "Estimated cost",
+    // Templates
+    general: "General",
+    creative: "Creative",
+    technical: "Technical",
+    useTemplate: "Use Template",
+    // Previously added categories
+    business: "Business",
+    businessTemplatesDesc: "Templates for business analysis and documentation",
+    academic: "Academic",
+    academicTemplatesDesc: "Templates for research and academic writing",
+    marketing: "Marketing",
+    marketingTemplatesDesc: "Templates for marketing content and campaigns",
+    // New categories
+    healthcare: "Healthcare",
+    healthcareTemplatesDesc: "Templates for medical education and clinical documentation",
+    legal: "Legal",
+    legalTemplatesDesc: "Templates for legal documents and analysis",
+    education: "Education",
+    educationTemplatesDesc: "Templates for teaching materials and educational planning",
   },
   // Spanish translations
   es: {
@@ -165,6 +213,21 @@ const defaultTranslations: Record<Language, Record<string, string>> = {
     min: "min",
     tryPlayground: "Probar Área de Práctica",
     settings: "Configuración",
+    of: "de",
+    // Previously added categories
+    business: "Negocios",
+    businessTemplatesDesc: "Plantillas para análisis y documentación empresarial",
+    academic: "Académico",
+    academicTemplatesDesc: "Plantillas para investigación y escritura académica",
+    marketing: "Marketing",
+    marketingTemplatesDesc: "Plantillas para contenido y campañas de marketing",
+    // New categories
+    healthcare: "Salud",
+    healthcareTemplatesDesc: "Plantillas para educación médica y documentación clínica",
+    legal: "Legal",
+    legalTemplatesDesc: "Plantillas para documentos legales y análisis jurídico",
+    education: "Educación",
+    educationTemplatesDesc: "Plantillas para materiales didácticos y planificación educativa",
   },
   // Other languages omitted for brevity
   fr: {
@@ -181,6 +244,7 @@ const defaultTranslations: Record<Language, Record<string, string>> = {
     advanced: "Avancé",
     min: "min",
     startLesson: "Commencer la Leçon",
+    of: "sur",
     // Lesson titles
     lesson1Title: "Introduction à l'Ingénierie de Prompts",
     lesson1Desc: "Apprenez les bases de la création de prompts efficaces",
@@ -198,6 +262,17 @@ const defaultTranslations: Record<Language, Record<string, string>> = {
     lesson7Desc: "Apprenez des techniques pour affiner et améliorer vos prompts",
     lesson8Title: "Prompts pour l'Écriture Créative",
     lesson8Desc: "Techniques spécialisées pour les tâches créatives et narratives",
+    // Previously added categories
+    business: "Affaires",
+    academic: "Académique",
+    marketing: "Marketing",
+    // New categories
+    healthcare: "Santé",
+    healthcareTemplatesDesc: "Modèles pour l'éducation médicale et la documentation clinique",
+    legal: "Juridique",
+    legalTemplatesDesc: "Modèles pour documents juridiques et analyses légales",
+    education: "Éducation",
+    educationTemplatesDesc: "Modèles pour matériel pédagogique et planification éducative",
   },
   de: {
     /* Translations omitted for brevity */
@@ -210,6 +285,18 @@ const defaultTranslations: Record<Language, Record<string, string>> = {
     advanced: "Experte",
     min: "Min",
     startLesson: "Lektion starten",
+    of: "von",
+    // Previously added categories
+    business: "Geschäft",
+    academic: "Akademisch",
+    marketing: "Marketing",
+    // New categories
+    healthcare: "Gesundheitswesen",
+    healthcareTemplatesDesc: "Vorlagen für medizinische Bildung und klinische Dokumentation",
+    legal: "Recht",
+    legalTemplatesDesc: "Vorlagen für juristische Dokumente und Analysen",
+    education: "Bildung",
+    educationTemplatesDesc: "Vorlagen für Lehrmaterialien und Bildungsplanung",
   },
   zh: {
     /* Translations omitted for brevity */
@@ -222,6 +309,11 @@ const defaultTranslations: Record<Language, Record<string, string>> = {
     advanced: "高级",
     min: "分钟",
     startLesson: "开始课程",
+    of: "共",
+    // New categories
+    healthcare: "医疗保健",
+    legal: "法律",
+    education: "教育",
   },
   ja: {
     /* Translations omitted for brevity */
@@ -234,6 +326,11 @@ const defaultTranslations: Record<Language, Record<string, string>> = {
     advanced: "上級者",
     min: "分",
     startLesson: "レッスンを始める",
+    of: "中",
+    // New categories
+    healthcare: "ヘルスケア",
+    legal: "法律",
+    education: "教育",
   },
   ar: {
     // Arabic translations - basic set
@@ -255,6 +352,7 @@ const defaultTranslations: Record<Language, Record<string, string>> = {
     advanced: "متقدم",
     min: "دقيقة",
     startLesson: "ابدأ الدرس",
+    of: "من",
     // Lesson titles
     lesson1Title: "مقدمة في هندسة الموجهات",
     lesson1Desc: "تعلم أساسيات إنشاء موجهات فعالة",
@@ -272,6 +370,10 @@ const defaultTranslations: Record<Language, Record<string, string>> = {
     lesson7Desc: "تعلم تقنيات لتنقيح وتحسين موجهاتك",
     lesson8Title: "موجهات الكتابة الإبداعية",
     lesson8Desc: "تقنيات متخصصة للمهام الإبداعية والسردية",
+    // New categories
+    healthcare: "الرعاية الصحية",
+    legal: "القانون",
+    education: "التعليم",
   },
   hi: {
     // Hindi translations - basic set
@@ -293,6 +395,7 @@ const defaultTranslations: Record<Language, Record<string, string>> = {
     advanced: "उन्नत",
     min: "मिनट",
     startLesson: "पाठ शुरू करें",
+    of: "में से",
     // Lesson titles
     lesson1Title: "प्रॉम्प्ट इंजीनियरिंग का परिचय",
     lesson1Desc: "प्रभावी प्रॉम्प्ट बनाने की मूल बातें सीखें",
@@ -310,6 +413,10 @@ const defaultTranslations: Record<Language, Record<string, string>> = {
     lesson7Desc: "अपने प्रॉम्प्ट को परिष्कृत और सुधारने के लिए तकनीकें सीखें",
     lesson8Title: "रचनात्मक लेखन प्रॉम्प्ट",
     lesson8Desc: "रचनात्मक और कथात्मक कार्यों के लिए विशेष तकनीकें",
+    // New categories
+    healthcare: "स्वास्थ्य देखभाल",
+    legal: "कानूनी",
+    education: "शिक्षा",
   },
   ur: {
     // Urdu translations - basic set
@@ -331,6 +438,11 @@ const defaultTranslations: Record<Language, Record<string, string>> = {
     advanced: "ماہر",
     min: "منٹ",
     startLesson: "سبق شروع کریں",
+    of: "میں سے",
+    // New categories
+    healthcare: "صحت کی دیکھ بھال",
+    legal: "قانونی",
+    education: "تعلیم",
   },
   te: {
     // Telugu translations - basic set
@@ -352,6 +464,11 @@ const defaultTranslations: Record<Language, Record<string, string>> = {
     advanced: "అధునాతన",
     min: "నిమిషాలు",
     startLesson: "పాఠం ప్రారంభించండి",
+    of: "లో",
+    // New categories
+    healthcare: "ఆరోగ్య సంరక్షణ",
+    legal: "చట్టపరమైన",
+    education: "విద్య",
   },
   ta: {
     // Tamil translations - basic set
@@ -373,6 +490,11 @@ const defaultTranslations: Record<Language, Record<string, string>> = {
     advanced: "மேம்பட்ட",
     min: "நிமிடங்கள்",
     startLesson: "பாடத்தைத் தொடங்கு",
+    of: "இல்",
+    // New categories
+    healthcare: "சுகாதாரம்",
+    legal: "சட்டம்",
+    education: "கல்வி",
   },
 }
 
@@ -393,47 +515,69 @@ export function LanguageProvider({
   const [translations, setTranslations] = useState<Record<string, string>>(defaultTranslations.en)
   const [isRTL, setIsRTL] = useState(false)
 
+  // Initialize language from localStorage or browser preference
   useEffect(() => {
-    // Load saved language preference from localStorage
-    const savedLanguage = localStorage.getItem("language") as Language | null
-    if (savedLanguage && Object.keys(defaultTranslations).includes(savedLanguage)) {
-      setLanguage(savedLanguage)
+    try {
+      // Load saved language preference from localStorage
+      const savedLanguage = localStorage.getItem("language") as Language | null
+      if (savedLanguage && Object.keys(defaultTranslations).includes(savedLanguage)) {
+        setLanguage(savedLanguage)
+      } else {
+        // Try to detect browser language
+        const browserLang = navigator.language.split("-")[0] as Language
+        if (Object.keys(defaultTranslations).includes(browserLang)) {
+          setLanguage(browserLang)
+        }
+        // If not found, it will default to "en"
+      }
+    } catch (error) {
+      console.error("Error initializing language:", error)
+      // Default to English if there's an error
     }
   }, [])
 
+  // Update translations and RTL status when language changes
   useEffect(() => {
-    // Update translations when language changes
-    setTranslations(defaultTranslations[language] || defaultTranslations.en)
-    // Update RTL status
-    setIsRTL(language === "ar" || language === "ur")
-    // Save language preference
-    localStorage.setItem("language", language)
+    try {
+      // Update translations when language changes
+      setTranslations(defaultTranslations[language] || defaultTranslations.en)
+      // Update RTL status
+      setIsRTL(language === "ar" || language === "ur")
+      // Save language preference
+      localStorage.setItem("language", language)
 
-    // Apply RTL class to the root element
-    const htmlElement = document.documentElement
-    if (language === "ar" || language === "ur") {
-      htmlElement.dir = "rtl"
-      htmlElement.classList.add("rtl")
-      htmlElement.classList.remove("ltr")
-    } else {
-      htmlElement.dir = "ltr"
-      htmlElement.classList.add("ltr")
-      htmlElement.classList.remove("rtl")
+      // Apply RTL class to the root element
+      const htmlElement = document.documentElement
+      if (language === "ar" || language === "ur") {
+        htmlElement.dir = "rtl"
+        htmlElement.classList.add("rtl")
+        htmlElement.classList.remove("ltr")
+      } else {
+        htmlElement.dir = "ltr"
+        htmlElement.classList.add("ltr")
+        htmlElement.classList.remove("rtl")
+      }
+    } catch (error) {
+      console.error("Error updating language settings:", error)
     }
   }, [language])
 
-  // Translation function for compatibility
-  const t = (key: string): string => {
-    if (translations[key]) {
-      return translations[key]
-    }
-    // Fallback to English
-    if (defaultTranslations.en[key]) {
-      return defaultTranslations.en[key]
-    }
-    // Return key if no translation found
-    return key
-  }
+  // Translation function with fallback support
+  const t = useCallback(
+    (key: string, fallback?: string): string => {
+      // First try the current language
+      if (translations[key]) {
+        return translations[key]
+      }
+      // Then try English as fallback
+      if (defaultTranslations.en[key]) {
+        return defaultTranslations.en[key]
+      }
+      // Then use provided fallback or key itself
+      return fallback || key
+    },
+    [translations],
+  )
 
   return (
     <LanguageContext.Provider value={{ language, setLanguage, translations, isRTL, t }}>
@@ -444,8 +588,14 @@ export function LanguageProvider({
 
 export function useLanguage() {
   const context = useContext(LanguageContext)
-  if (context === undefined) {
+  if (!context) {
     throw new Error("useLanguage must be used within a LanguageProvider")
   }
-  return context
+
+  // Add a translation helper function
+  const t = (key: string, fallback: string) => {
+    return context.translations[key] || fallback
+  }
+
+  return { ...context, t }
 }
