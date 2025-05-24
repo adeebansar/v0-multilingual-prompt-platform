@@ -224,10 +224,17 @@ export default function PlaygroundComponent() {
 
   // Get score color based on value
   const getScoreColor = (score: number) => {
-    if (score >= 80) return "bg-gradient-to-r from-green-500 to-emerald-500"
-    if (score >= 60) return "bg-gradient-to-r from-yellow-400 to-amber-500"
-    if (score >= 40) return "bg-gradient-to-r from-orange-400 to-orange-500"
-    return "bg-gradient-to-r from-red-500 to-rose-500"
+    if (score >= 80) return "from-green-500 to-emerald-500"
+    if (score >= 60) return "from-yellow-400 to-amber-500"
+    if (score >= 40) return "from-orange-400 to-orange-500"
+    return "from-red-500 to-rose-500"
+  }
+
+  const getScoreBadgeVariant = (score: number) => {
+    if (score >= 80) return "default"
+    if (score >= 60) return "secondary"
+    if (score >= 40) return "outline"
+    return "destructive"
   }
 
   return (
@@ -237,31 +244,16 @@ export default function PlaygroundComponent() {
       </h1>
 
       <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-        <TabsList className="grid grid-cols-3 w-full max-w-md mb-4 p-1 bg-gray-100 dark:bg-gray-800 rounded-xl">
-          <TabsTrigger
-            value="playground"
-            className="rounded-lg data-[state=active]:bg-white dark:data-[state=active]:bg-gray-700 data-[state=active]:shadow-sm"
-          >
-            {translations.playground || "Playground"}
-          </TabsTrigger>
-          <TabsTrigger
-            value="templates"
-            className="rounded-lg data-[state=active]:bg-white dark:data-[state=active]:bg-gray-700 data-[state=active]:shadow-sm"
-          >
-            {translations.templates || "Templates"}
-          </TabsTrigger>
-          <TabsTrigger
-            value="history"
-            className="rounded-lg data-[state=active]:bg-white dark:data-[state=active]:bg-gray-700 data-[state=active]:shadow-sm"
-          >
-            {translations.history || "History"}
-          </TabsTrigger>
+        <TabsList className="grid grid-cols-3 w-full max-w-md mb-4">
+          <TabsTrigger value="playground">{translations.playground || "Playground"}</TabsTrigger>
+          <TabsTrigger value="templates">{translations.templates || "Templates"}</TabsTrigger>
+          <TabsTrigger value="history">{translations.history || "History"}</TabsTrigger>
         </TabsList>
 
         <TabsContent value="playground" className="space-y-6">
           <div className="grid gap-6 md:grid-cols-2">
             <div className="space-y-6">
-              <Card className="border-purple-200 dark:border-purple-900 shadow-md overflow-hidden">
+              <Card className="border-purple-200 dark:border-purple-900 shadow-lg">
                 <CardHeader className="bg-gradient-to-r from-purple-500 to-indigo-600 text-white">
                   <CardTitle className="flex justify-between items-center">
                     <span className="flex items-center">
@@ -284,17 +276,11 @@ export default function PlaygroundComponent() {
                     <div className="mt-2">
                       <div className="flex items-center justify-between mb-1">
                         <span className="text-sm text-white/90">Prompt Quality Score</span>
-                        <div className="flex items-center gap-2">
-                          <Badge className={`${getScoreColor(promptAnalysis.score)} text-white font-bold px-3 py-1`}>
-                            {promptAnalysis.score}/100
-                          </Badge>
-                        </div>
+                        <Badge variant={getScoreBadgeVariant(promptAnalysis.score)} className="text-white font-bold">
+                          {promptAnalysis.score}/100
+                        </Badge>
                       </div>
-                      <Progress
-                        value={promptAnalysis.score}
-                        className="h-2 bg-white/20"
-                        indicatorClassName={getScoreColor(promptAnalysis.score)}
-                      />
+                      <Progress value={promptAnalysis.score} className="h-2 bg-white/20" />
                     </div>
                   )}
                 </CardHeader>
@@ -319,7 +305,7 @@ export default function PlaygroundComponent() {
                     </div>
                   )}
                 </CardContent>
-                <CardFooter className="flex flex-col gap-4 bg-gray-50 dark:bg-gray-900 border-t border-purple-100 dark:border-purple-900">
+                <CardFooter className="flex flex-col gap-4 bg-gray-50 dark:bg-gray-900">
                   <div className="grid grid-cols-2 gap-4 w-full">
                     <div className="space-y-2">
                       <label className="text-sm font-medium flex items-center">
@@ -373,20 +359,18 @@ export default function PlaygroundComponent() {
               </Card>
 
               {promptAnalysis && (
-                <Card className="border-indigo-200 dark:border-indigo-900 shadow-md overflow-hidden">
+                <Card className="border-indigo-200 dark:border-indigo-900 shadow-lg">
                   <CardHeader className="bg-gradient-to-r from-indigo-500 to-blue-600 text-white">
                     <CardTitle className="flex items-center">
                       <BarChart2 className="mr-2 h-5 w-5" />
                       {translations.promptAnalysis || "Prompt Analysis"}
                     </CardTitle>
                   </CardHeader>
-                  <CardContent className="pt-6 divide-y divide-gray-200 dark:divide-gray-800">
-                    <div className="pb-6">
+                  <CardContent className="pt-6">
+                    <div className="mb-6">
                       <div className="flex items-center justify-between mb-4">
                         <h3 className="font-medium text-lg">{translations.scoreBreakdown || "Score Breakdown"}</h3>
-                        <Badge
-                          className={`${getScoreColor(promptAnalysis.score)} text-white font-bold px-3 py-1 text-lg`}
-                        >
+                        <Badge variant={getScoreBadgeVariant(promptAnalysis.score)} className="text-lg px-3 py-1">
                           {promptAnalysis.score}/100
                         </Badge>
                       </div>
@@ -397,11 +381,7 @@ export default function PlaygroundComponent() {
                             <span className="font-medium">{translations.clarity || "Clarity"}</span>
                             <span className="font-bold">{promptAnalysis.categoryScores.clarity}%</span>
                           </div>
-                          <Progress
-                            value={promptAnalysis.categoryScores.clarity}
-                            className="h-3 rounded-full"
-                            indicatorClassName={`${getScoreColor(promptAnalysis.categoryScores.clarity)} rounded-full`}
-                          />
+                          <Progress value={promptAnalysis.categoryScores.clarity} className="h-3" />
                         </div>
 
                         <div>
@@ -409,11 +389,7 @@ export default function PlaygroundComponent() {
                             <span className="font-medium">{translations.specificity || "Specificity"}</span>
                             <span className="font-bold">{promptAnalysis.categoryScores.specificity}%</span>
                           </div>
-                          <Progress
-                            value={promptAnalysis.categoryScores.specificity}
-                            className="h-3 rounded-full"
-                            indicatorClassName={`${getScoreColor(promptAnalysis.categoryScores.specificity)} rounded-full`}
-                          />
+                          <Progress value={promptAnalysis.categoryScores.specificity} className="h-3" />
                         </div>
 
                         <div>
@@ -421,11 +397,7 @@ export default function PlaygroundComponent() {
                             <span className="font-medium">{translations.context || "Context"}</span>
                             <span className="font-bold">{promptAnalysis.categoryScores.context}%</span>
                           </div>
-                          <Progress
-                            value={promptAnalysis.categoryScores.context}
-                            className="h-3 rounded-full"
-                            indicatorClassName={`${getScoreColor(promptAnalysis.categoryScores.context)} rounded-full`}
-                          />
+                          <Progress value={promptAnalysis.categoryScores.context} className="h-3" />
                         </div>
 
                         <div>
@@ -433,18 +405,14 @@ export default function PlaygroundComponent() {
                             <span className="font-medium">{translations.length || "Length"}</span>
                             <span className="font-bold">{promptAnalysis.categoryScores.length}%</span>
                           </div>
-                          <Progress
-                            value={promptAnalysis.categoryScores.length}
-                            className="h-3 rounded-full"
-                            indicatorClassName={`${getScoreColor(promptAnalysis.categoryScores.length)} rounded-full`}
-                          />
+                          <Progress value={promptAnalysis.categoryScores.length} className="h-3" />
                         </div>
                       </div>
                     </div>
 
                     {/* Prompt Type */}
                     {promptAnalysis.promptType !== "none" && (
-                      <div className="py-6">
+                      <div className="mb-4">
                         <h4 className="font-medium text-purple-600 dark:text-purple-400 flex items-center mb-3">
                           <Award className="h-4 w-4 mr-2" />
                           {translations.promptType || "Prompt Type"}
@@ -452,7 +420,7 @@ export default function PlaygroundComponent() {
                         <div className="flex flex-wrap gap-2 mb-3">
                           <Badge
                             variant="outline"
-                            className="bg-purple-50 dark:bg-purple-900/20 text-purple-700 dark:text-purple-300 border-purple-200 dark:border-purple-800 px-3 py-1"
+                            className="bg-purple-50 dark:bg-purple-900/20 text-purple-700 dark:text-purple-300"
                           >
                             {promptAnalysis.promptType.charAt(0).toUpperCase() + promptAnalysis.promptType.slice(1)}
                           </Badge>
@@ -468,7 +436,7 @@ export default function PlaygroundComponent() {
                               <Badge
                                 key={i}
                                 variant="outline"
-                                className="text-xs cursor-pointer hover:bg-indigo-50 dark:hover:bg-indigo-900/20 border-indigo-200 dark:border-indigo-800 text-indigo-700 dark:text-indigo-300"
+                                className="text-xs cursor-pointer hover:bg-indigo-50 dark:hover:bg-indigo-900/20"
                                 onClick={() => {
                                   setActiveTab("templates")
                                   setActiveTemplateCategory(category)
@@ -483,7 +451,7 @@ export default function PlaygroundComponent() {
                     )}
 
                     {promptAnalysis.strengths.length > 0 && (
-                      <div className="py-6">
+                      <div className="mb-4">
                         <h4 className="font-medium text-green-600 dark:text-green-400 flex items-center mb-3">
                           <CheckCircle className="h-4 w-4 mr-2" />
                           {translations.strengths || "Strengths"}
@@ -492,7 +460,7 @@ export default function PlaygroundComponent() {
                           {promptAnalysis.strengths.map((strength, i) => (
                             <li
                               key={i}
-                              className="flex items-start text-sm bg-green-50 dark:bg-green-900/10 p-2 rounded-md border border-green-100 dark:border-green-800"
+                              className="flex items-start text-sm bg-green-50 dark:bg-green-900/10 p-2 rounded-md"
                             >
                               <CheckCircle className="h-4 w-4 mr-2 text-green-500 mt-0.5 flex-shrink-0" />
                               <span>{strength}</span>
@@ -503,7 +471,7 @@ export default function PlaygroundComponent() {
                     )}
 
                     {promptAnalysis.weaknesses.length > 0 && (
-                      <div className="py-6">
+                      <div className="mb-4">
                         <h4 className="font-medium text-red-600 dark:text-red-400 flex items-center mb-3">
                           <XCircle className="h-4 w-4 mr-2" />
                           {translations.weaknesses || "Weaknesses"}
@@ -512,7 +480,7 @@ export default function PlaygroundComponent() {
                           {promptAnalysis.weaknesses.map((weakness, i) => (
                             <li
                               key={i}
-                              className="flex items-start text-sm bg-red-50 dark:bg-red-900/10 p-2 rounded-md border border-red-100 dark:border-red-800"
+                              className="flex items-start text-sm bg-red-50 dark:bg-red-900/10 p-2 rounded-md"
                             >
                               <XCircle className="h-4 w-4 mr-2 text-red-500 mt-0.5 flex-shrink-0" />
                               <span>{weakness}</span>
@@ -523,7 +491,7 @@ export default function PlaygroundComponent() {
                     )}
 
                     {promptAnalysis.suggestions.length > 0 && (
-                      <div className="py-6">
+                      <div className="mb-6">
                         <h4 className="font-medium text-blue-600 dark:text-blue-400 flex items-center mb-3">
                           <Lightbulb className="h-4 w-4 mr-2" />
                           {translations.suggestions || "Suggestions"}
@@ -532,7 +500,7 @@ export default function PlaygroundComponent() {
                           {promptAnalysis.suggestions.map((suggestion, i) => (
                             <li
                               key={i}
-                              className="flex items-start text-sm bg-blue-50 dark:bg-blue-900/10 p-2 rounded-md border border-blue-100 dark:border-blue-800"
+                              className="flex items-start text-sm bg-blue-50 dark:bg-blue-900/10 p-2 rounded-md"
                             >
                               <Lightbulb className="h-4 w-4 mr-2 text-blue-500 mt-0.5 flex-shrink-0" />
                               <span>{suggestion}</span>
@@ -544,18 +512,16 @@ export default function PlaygroundComponent() {
 
                     {/* Improved Prompts Section */}
                     {promptAnalysis.improvedPrompts.length > 0 && (
-                      <div className="pt-6">
-                        <ImprovedPrompts
-                          improvedPrompts={promptAnalysis.improvedPrompts}
-                          onUsePrompt={handleUseImprovedPrompt}
-                          onViewMore={() => setShowImprovedPromptsModal(true)}
-                        />
-                      </div>
+                      <ImprovedPrompts
+                        improvedPrompts={promptAnalysis.improvedPrompts}
+                        onUsePrompt={handleUseImprovedPrompt}
+                        onViewMore={() => setShowImprovedPromptsModal(true)}
+                      />
                     )}
 
                     {/* Relevant Templates Section */}
                     {promptAnalysis.relevantTemplates && promptAnalysis.relevantTemplates.length > 0 && (
-                      <div className="pt-6">
+                      <div className="mt-6 pt-4 border-t border-gray-200 dark:border-gray-700">
                         <h4 className="font-medium text-yellow-600 dark:text-yellow-400 flex items-center mb-3">
                           <Lightbulb className="h-4 w-4 mr-2" />
                           {translations.relevantTemplates || "Relevant Templates"}
@@ -564,14 +530,14 @@ export default function PlaygroundComponent() {
                           {promptAnalysis.relevantTemplates.slice(0, 2).map((template, i) => (
                             <div
                               key={i}
-                              className="p-3 bg-yellow-50 dark:bg-yellow-900/10 rounded-md border border-yellow-100 dark:border-yellow-800 hover:shadow-md transition-shadow"
+                              className="p-3 bg-yellow-50 dark:bg-yellow-900/10 rounded-md border border-yellow-100 dark:border-yellow-800"
                             >
                               <h5 className="font-medium text-sm mb-1">{template.title}</h5>
                               <p className="text-xs text-gray-600 dark:text-gray-400 mb-2">{template.prompt}</p>
                               <Button
                                 variant="outline"
                                 size="sm"
-                                className="text-xs h-7 bg-white dark:bg-gray-800 border-yellow-200 hover:bg-yellow-50 hover:border-yellow-300"
+                                className="text-xs h-7 bg-white dark:bg-gray-800"
                                 onClick={() => handleUseTemplate(template.prompt)}
                               >
                                 {translations.useTemplate || "Use Template"}
@@ -583,7 +549,7 @@ export default function PlaygroundComponent() {
                             <Button
                               variant="link"
                               size="sm"
-                              className="text-xs p-0 h-auto text-yellow-600 hover:text-yellow-700"
+                              className="text-xs p-0 h-auto"
                               onClick={() => {
                                 setActiveTab("templates")
                                 if (promptAnalysis.relevantTemplates[0]?.category) {
@@ -603,7 +569,7 @@ export default function PlaygroundComponent() {
             </div>
 
             <div className="space-y-6">
-              <Card className="border-blue-200 dark:border-blue-900 shadow-md overflow-hidden">
+              <Card className="border-blue-200 dark:border-blue-900 shadow-lg">
                 <CardHeader className="bg-gradient-to-r from-blue-500 to-cyan-600 text-white">
                   <CardTitle>{translations.response || "Response"}</CardTitle>
                 </CardHeader>
@@ -649,33 +615,19 @@ export default function PlaygroundComponent() {
                   </div>
                 </CardContent>
                 {result && (
-                  <CardFooter className="flex justify-between bg-gray-50 dark:bg-gray-900 border-t border-blue-100 dark:border-blue-900">
+                  <CardFooter className="flex justify-between bg-gray-50 dark:bg-gray-900">
                     <div className="flex gap-2">
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={handleSavePrompt}
-                        className="border-blue-200 hover:bg-blue-50 hover:border-blue-300"
-                      >
-                        <Save className="h-4 w-4 mr-2 text-blue-500" />
+                      <Button variant="outline" size="sm" onClick={handleSavePrompt}>
+                        <Save className="h-4 w-4 mr-2" />
                         {translations.save || "Save"}
                       </Button>
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={handleCopyPrompt}
-                        className="border-blue-200 hover:bg-blue-50 hover:border-blue-300"
-                      >
-                        <Copy className="h-4 w-4 mr-2 text-blue-500" />
+                      <Button variant="outline" size="sm" onClick={handleCopyPrompt}>
+                        <Copy className="h-4 w-4 mr-2" />
                         {translations.copy || "Copy"}
                       </Button>
                     </div>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      className="border-blue-200 hover:bg-blue-50 hover:border-blue-300"
-                    >
-                      <Share className="h-4 w-4 mr-2 text-blue-500" />
+                    <Button variant="outline" size="sm">
+                      <Share className="h-4 w-4 mr-2" />
                       {translations.share || "Share"}
                     </Button>
                   </CardFooter>
@@ -683,25 +635,25 @@ export default function PlaygroundComponent() {
               </Card>
 
               {(promptTokens > 0 || completionTokens > 0) && (
-                <Card className="border-cyan-200 dark:border-cyan-900 shadow-md overflow-hidden">
+                <Card className="border-cyan-200 dark:border-cyan-900 shadow-lg">
                   <CardHeader className="bg-gradient-to-r from-cyan-500 to-teal-600 text-white">
                     <CardTitle>{translations.usage || "Usage"}</CardTitle>
                   </CardHeader>
                   <CardContent className="pt-6">
-                    <div className="grid grid-cols-2 gap-6">
-                      <div className="bg-cyan-50 dark:bg-cyan-900/20 p-4 rounded-lg border border-cyan-100 dark:border-cyan-800">
+                    <div className="grid grid-cols-2 gap-4">
+                      <div className="bg-cyan-50 dark:bg-cyan-900/20 p-4 rounded-lg">
                         <p className="text-sm text-cyan-700 dark:text-cyan-300 mb-1 font-medium">
                           {translations.promptTokens || "Prompt tokens"}
                         </p>
                         <p className="font-bold text-2xl text-cyan-800 dark:text-cyan-200">{promptTokens}</p>
                       </div>
-                      <div className="bg-teal-50 dark:bg-teal-900/20 p-4 rounded-lg border border-teal-100 dark:border-teal-800">
+                      <div className="bg-teal-50 dark:bg-teal-900/20 p-4 rounded-lg">
                         <p className="text-sm text-teal-700 dark:text-teal-300 mb-1 font-medium">
                           {translations.completionTokens || "Completion tokens"}
                         </p>
                         <p className="font-bold text-2xl text-teal-800 dark:text-teal-200">{completionTokens}</p>
                       </div>
-                      <div className="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-lg border border-blue-100 dark:border-blue-800">
+                      <div className="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-lg">
                         <p className="text-sm text-blue-700 dark:text-blue-300 mb-1 font-medium">
                           {translations.total || "Total"}
                         </p>
@@ -710,7 +662,7 @@ export default function PlaygroundComponent() {
                           <span className="text-sm font-normal">{translations.tokens || "tokens"}</span>
                         </p>
                       </div>
-                      <div className="bg-indigo-50 dark:bg-indigo-900/20 p-4 rounded-lg border border-indigo-100 dark:border-indigo-800">
+                      <div className="bg-indigo-50 dark:bg-indigo-900/20 p-4 rounded-lg">
                         <p className="text-sm text-indigo-700 dark:text-indigo-300 mb-1 font-medium">
                           {translations.estimatedCost || "Estimated cost"}
                         </p>
@@ -727,97 +679,38 @@ export default function PlaygroundComponent() {
         </TabsContent>
 
         <TabsContent value="templates">
-          {/* Templates tab content - unchanged */}
           <div className="mb-6">
             <Tabs value={activeTemplateCategory} onValueChange={setActiveTemplateCategory}>
-              <TabsList className="flex flex-wrap p-1 bg-gray-100 dark:bg-gray-800 rounded-xl gap-1">
-                <TabsTrigger
-                  value="general"
-                  className="rounded-lg data-[state=active]:bg-white dark:data-[state=active]:bg-gray-700 data-[state=active]:shadow-sm"
-                >
-                  {translations.general || "General"}
-                </TabsTrigger>
-                <TabsTrigger
-                  value="creative"
-                  className="rounded-lg data-[state=active]:bg-white dark:data-[state=active]:bg-gray-700 data-[state=active]:shadow-sm"
-                >
-                  {translations.creative || "Creative"}
-                </TabsTrigger>
-                <TabsTrigger
-                  value="technical"
-                  className="rounded-lg data-[state=active]:bg-white dark:data-[state=active]:bg-gray-700 data-[state=active]:shadow-sm"
-                >
-                  {translations.technical || "Technical"}
-                </TabsTrigger>
-                <TabsTrigger
-                  value="business"
-                  className="rounded-lg data-[state=active]:bg-white dark:data-[state=active]:bg-gray-700 data-[state=active]:shadow-sm"
-                >
-                  {translations.business || "Business"}
-                </TabsTrigger>
-                <TabsTrigger
-                  value="academic"
-                  className="rounded-lg data-[state=active]:bg-white dark:data-[state=active]:bg-gray-700 data-[state=active]:shadow-sm"
-                >
-                  {translations.academic || "Academic"}
-                </TabsTrigger>
-                <TabsTrigger
-                  value="marketing"
-                  className="rounded-lg data-[state=active]:bg-white dark:data-[state=active]:bg-gray-700 data-[state=active]:shadow-sm"
-                >
-                  {translations.marketing || "Marketing"}
-                </TabsTrigger>
-                <TabsTrigger
-                  value="healthcare"
-                  className="rounded-lg data-[state=active]:bg-white dark:data-[state=active]:bg-gray-700 data-[state=active]:shadow-sm"
-                >
-                  {translations.healthcare || "Healthcare"}
-                </TabsTrigger>
-                <TabsTrigger
-                  value="legal"
-                  className="rounded-lg data-[state=active]:bg-white dark:data-[state=active]:bg-gray-700 data-[state=active]:shadow-sm"
-                >
-                  {translations.legal || "Legal"}
-                </TabsTrigger>
-                <TabsTrigger
-                  value="education"
-                  className="rounded-lg data-[state=active]:bg-white dark:data-[state=active]:bg-gray-700 data-[state=active]:shadow-sm"
-                >
-                  {translations.education || "Education"}
-                </TabsTrigger>
-                <TabsTrigger
-                  value="career"
-                  className="rounded-lg data-[state=active]:bg-white dark:data-[state=active]:bg-gray-700 data-[state=active]:shadow-sm"
-                >
-                  {translations.career || "Career"}
-                </TabsTrigger>
+              <TabsList className="flex flex-wrap">
+                <TabsTrigger value="general">{translations.general || "General"}</TabsTrigger>
+                <TabsTrigger value="creative">{translations.creative || "Creative"}</TabsTrigger>
+                <TabsTrigger value="technical">{translations.technical || "Technical"}</TabsTrigger>
+                <TabsTrigger value="business">{translations.business || "Business"}</TabsTrigger>
+                <TabsTrigger value="academic">{translations.academic || "Academic"}</TabsTrigger>
+                <TabsTrigger value="marketing">{translations.marketing || "Marketing"}</TabsTrigger>
+                <TabsTrigger value="healthcare">{translations.healthcare || "Healthcare"}</TabsTrigger>
+                <TabsTrigger value="legal">{translations.legal || "Legal"}</TabsTrigger>
+                <TabsTrigger value="education">{translations.education || "Education"}</TabsTrigger>
+                <TabsTrigger value="career">{translations.career || "Career"}</TabsTrigger>
               </TabsList>
             </Tabs>
           </div>
 
           <div className="grid gap-6">
             {activeTemplateCategory === "general" && (
-              <Card className="border-purple-200 dark:border-purple-900 shadow-md overflow-hidden">
-                <CardHeader className="bg-gradient-to-r from-purple-500 to-indigo-600 text-white">
+              <Card>
+                <CardHeader>
                   <CardTitle>{translations.general || "General"}</CardTitle>
-                  <CardDescription className="text-white/80">
+                  <CardDescription>
                     {translations.generalTemplatesDesc || "Basic templates for common tasks"}
                   </CardDescription>
                 </CardHeader>
-                <CardContent className="grid gap-4 pt-6">
+                <CardContent className="grid gap-4">
                   {templates.general.map((template, i) => (
-                    <Card
-                      key={i}
-                      className="p-4 border-purple-100 dark:border-purple-900 hover:shadow-md transition-shadow"
-                    >
-                      <h3 className="font-medium mb-2 text-purple-700 dark:text-purple-300">{template.title}</h3>
+                    <Card key={i} className="p-4">
+                      <h3 className="font-medium mb-2">{template.title}</h3>
                       <p className="text-sm text-muted-foreground mb-4">{template.prompt}</p>
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => handleUseTemplate(template.prompt)}
-                        className="border-purple-200 hover:bg-purple-50 hover:border-purple-300 dark:border-purple-800 dark:hover:bg-purple-900/20"
-                      >
+                      <Button variant="outline" size="sm" onClick={() => handleUseTemplate(template.prompt)}>
                         {translations.useTemplate || "Use Template"}
                       </Button>
                     </Card>
@@ -826,8 +719,7 @@ export default function PlaygroundComponent() {
               </Card>
             )}
 
-            {/* Other template categories would follow the same pattern */}
-            {/* For brevity, I'm not including all of them here */}
+            {/* Add other template categories as needed */}
           </div>
         </TabsContent>
 
@@ -855,7 +747,6 @@ function PromptHistory() {
   const { toast } = useToast()
 
   const handleLoadPrompt = (prompt: string) => {
-    // This would be implemented to load a prompt from history
     toast({
       title: translations.promptLoaded || "Prompt loaded",
       description: translations.promptLoadedFromHistory || "Prompt loaded from history.",
@@ -872,17 +763,11 @@ function PromptHistory() {
 
   if (history.length === 0) {
     return (
-      <Card className="border-indigo-200 dark:border-indigo-900 shadow-md overflow-hidden">
+      <Card>
         <CardContent className="flex flex-col items-center justify-center py-12">
-          <div className="bg-indigo-100 dark:bg-indigo-900/30 p-4 rounded-full mb-4">
-            <AlertCircle className="h-8 w-8 text-indigo-500" />
-          </div>
-          <p className="text-muted-foreground mb-2 font-medium">
-            {translations.noPromptHistory || "No prompt history yet"}
-          </p>
-          <p className="text-sm text-muted-foreground text-center max-w-md">
-            {translations.promptHistoryDesc ||
-              "Your saved prompts will appear here. Generate and save prompts to build your library."}
+          <p className="text-muted-foreground mb-2">{translations.noPromptHistory || "No prompt history yet"}</p>
+          <p className="text-sm text-muted-foreground">
+            {translations.promptHistoryDesc || "Your saved prompts will appear here"}
           </p>
         </CardContent>
       </Card>
@@ -892,33 +777,18 @@ function PromptHistory() {
   return (
     <div className="space-y-4">
       {history.map((item) => (
-        <Card
-          key={item.id}
-          className="border-indigo-100 dark:border-indigo-900 hover:shadow-md transition-shadow overflow-hidden"
-        >
-          <CardHeader className="bg-gradient-to-r from-indigo-50 to-purple-50 dark:from-indigo-900/20 dark:to-purple-900/20 border-b border-indigo-100 dark:border-indigo-800">
-            <CardTitle className="text-base text-indigo-700 dark:text-indigo-300">
-              {item.prompt.substring(0, 50)}...
-            </CardTitle>
+        <Card key={item.id}>
+          <CardHeader>
+            <CardTitle className="text-base">{item.prompt.substring(0, 50)}...</CardTitle>
             <CardDescription>
               {new Date(item.createdAt).toLocaleString()} • {item.model} • Temp: {item.temperature}
             </CardDescription>
           </CardHeader>
-          <CardFooter className="flex justify-between py-3 bg-white dark:bg-gray-900">
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => handleLoadPrompt(item.prompt)}
-              className="border-indigo-200 hover:bg-indigo-50 hover:border-indigo-300 dark:border-indigo-800 dark:hover:bg-indigo-900/20"
-            >
+          <CardFooter className="flex justify-between">
+            <Button variant="outline" size="sm" onClick={() => handleLoadPrompt(item.prompt)}>
               {translations.load || "Load"}
             </Button>
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => handleDeletePrompt(item.id)}
-              className="border-red-200 hover:bg-red-50 hover:border-red-300 text-red-600 hover:text-red-700 dark:border-red-800 dark:hover:bg-red-900/20 dark:text-red-400 dark:hover:text-red-300"
-            >
+            <Button variant="outline" size="sm" onClick={() => handleDeletePrompt(item.id)}>
               {translations.delete || "Delete"}
             </Button>
           </CardFooter>
