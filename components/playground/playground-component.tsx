@@ -230,7 +230,7 @@ export default function PlaygroundComponent() {
     return "from-red-500 to-rose-500"
   }
 
-  const getScoreBadgeVariant = (score: number) => {
+  const getScoreBadgeVariant = (score: number): "default" | "secondary" | "outline" | "destructive" => {
     if (score >= 80) return "default"
     if (score >= 60) return "secondary"
     if (score >= 40) return "outline"
