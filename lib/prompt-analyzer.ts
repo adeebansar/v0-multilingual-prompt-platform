@@ -478,7 +478,7 @@ function findRelevantTemplates(
   allTemplates: Record<string, PromptTemplate[]>,
 ) {
   // Extract key components from the prompt
-  const { subject, action, context } = extractPromptComponents(prompt)
+  const { subject, action, context: _unusedContext } = extractPromptComponents(prompt); // Ensured state
   const intentType = detectPromptIntent(prompt)
 
   // Create a list of keywords from the prompt
@@ -877,6 +877,7 @@ function extractPromptComponents(prompt: string): { subject: string; action: str
   const promptLower = prompt.toLowerCase()
   let subject = ""
   let action = ""
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   let context = ""
 
   // Extract subject for different prompt types

@@ -20,7 +20,7 @@ export default function SimpleLessonPage() {
       <div className="prose max-w-none">
         <h2>What is Prompt Engineering?</h2>
         <p>
-          Prompt engineering is the process of designing and refining inputs to AI models to get desired outputs. It's a
+          Prompt engineering is the process of designing and refining inputs to AI models to get desired outputs. It&apos;s a
           crucial skill for working with large language models.
         </p>
 

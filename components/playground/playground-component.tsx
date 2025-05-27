@@ -160,12 +160,13 @@ export default function PlaygroundComponent() {
         totalTokens: promptTokens + estimatedCompletionTokens,
         estimatedCost: estimateCost(model, promptTokens, completionTokens),
       })
-    } catch (err: any) {
+    } catch (err) {
       console.error("Error:", err)
-      setError(err.message || "Something went wrong")
+      const errorMessage = err instanceof Error ? err.message : String(err);
+      setError(errorMessage || "Something went wrong")
       toast({
         title: "Error",
-        description: err.message || "Failed to generate response",
+        description: errorMessage || "Failed to generate response",
         variant: "destructive",
       })
     } finally {
@@ -601,12 +602,11 @@ export default function PlaygroundComponent() {
 }
 
 function PromptHistory() {
-  const { translations } = useLanguage()
   const history = usePromptStore((state) => state.history)
   const removePrompt = usePromptStore((state) => state.removePrompt)
   const { toast } = useToast()
 
-  const handleLoadPrompt = (prompt: string) => {
+  const handleLoadPrompt = () => {
     toast({
       title: "Prompt loaded",
       description: "Prompt loaded from history.",

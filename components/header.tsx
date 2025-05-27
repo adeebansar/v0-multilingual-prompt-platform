@@ -19,7 +19,7 @@ interface NavItem {
 
 export default function Header() {
   const pathname = usePathname()
-  const { translations, isRTL, t } = useLanguage()
+  const { isRTL, t } = useLanguage()
   const [mounted, setMounted] = useState(false)
 
   // Only show the correct navigation after mounting to prevent hydration mismatch

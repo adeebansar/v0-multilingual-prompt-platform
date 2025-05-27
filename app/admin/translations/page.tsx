@@ -8,8 +8,24 @@ import { useLanguage } from "@/components/language-provider"
 import { useToast } from "@/hooks/use-toast"
 import { Loader2 } from "lucide-react"
 
+// Define types based on MOCK_LESSON_CONTENT and TranslationManager expectations
+type Language = "es" | "fr" | string; // Add other languages as needed, or use a more generic string
+
+interface TranslationDetail {
+  text: string;
+  isVerified: boolean;
+  lastUpdated: string;
+}
+
+interface TranslationItem {
+  id: string;
+  key: string;
+  sourceText: string;
+  translations: Record<Language, TranslationDetail>;
+}
+
 // Mock data for demonstration
-const MOCK_LESSON_CONTENT = [
+const MOCK_LESSON_CONTENT: TranslationItem[] = [
   {
     id: "lesson1-intro",
     key: "lesson1.introduction",
@@ -58,7 +74,7 @@ export default function TranslationsPage() {
     return () => clearTimeout(timer)
   }, [])
 
-  const handleSaveTranslations = (items: any[]) => {
+  const handleSaveTranslations = (items: TranslationItem[]) => {
     // In a real app, this would save to a database
     setTranslationItems(items)
 
