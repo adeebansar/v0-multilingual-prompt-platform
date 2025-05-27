@@ -33,7 +33,7 @@ export default function LessonTwoPage() {
 
             <h3>Why Role-Based Prompting Works</h3>
             <p>
-              By establishing a clear role, you provide context that guides the model's response style, expertise level,
+              By establishing a clear role, you provide context that guides the model&apos;s response style, expertise level,
               and perspective.
             </p>
 

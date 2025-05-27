@@ -10,6 +10,27 @@ import { Progress } from "@/components/ui/progress"
 import { ArrowLeft, ArrowRight, CheckCircle2 } from "lucide-react"
 import { useLanguage } from "@/components/language-provider"
 
+// Define types for Quiz data structure
+interface QuizOption {
+  id: string;
+  text: string;
+}
+
+interface QuizQuestion {
+  id: number | string; // Allow string if IDs can be non-numeric
+  question: string;
+  options: QuizOption[];
+  correctAnswer: string;
+  explanation: string;
+}
+
+interface QuizData {
+  id: number | string; // Allow string if IDs can be non-numeric
+  title: string;
+  description: string;
+  questions: QuizQuestion[];
+}
+
 export default function QuizPage() {
   const params = useParams()
   const router = useRouter()
@@ -17,7 +38,7 @@ export default function QuizPage() {
   const [currentQuestion, setCurrentQuestion] = useState(0)
   const [selectedAnswers, setSelectedAnswers] = useState<Record<number, string>>({})
   const [showResults, setShowResults] = useState(false)
-  const [quizData, setQuizData] = useState<any>(null)
+  const [quizData, setQuizData] = useState<QuizData | null>(null)
   const [loading, setLoading] = useState(true)
 
   // Get quiz data based on the ID and language
@@ -70,7 +91,7 @@ export default function QuizPage() {
 
   const calculateScore = () => {
     let correctCount = 0
-    quizData.questions.forEach((question: any, index: number) => {
+    quizData.questions.forEach((question: QuizQuestion, index: number) => {
       if (selectedAnswers[index] === question.correctAnswer) {
         correctCount++
       }
@@ -101,7 +122,7 @@ export default function QuizPage() {
             </div>
 
             <div className="space-y-6 mt-8">
-              {quizData.questions.map((question: any, index: number) => {
+              {quizData.questions.map((question: QuizQuestion, index: number) => {
                 const isCorrect = selectedAnswers[index] === question.correctAnswer
                 return (
                   <div
@@ -117,14 +138,14 @@ export default function QuizPage() {
                           className={`font-medium ${isCorrect ? "text-green-600 dark:text-green-400" : "text-red-600 dark:text-red-400"}`}
                         >
                           {translations.yourAnswer}:{" "}
-                          {question.options.find((opt: any) => opt.id === selectedAnswers[index])?.text ||
+                          {question.options.find((opt: QuizOption) => opt.id === selectedAnswers[index])?.text ||
                             translations.notAnswered}
                         </span>
                       </p>
                       {!isCorrect && (
                         <p className="text-green-600 dark:text-green-400 font-medium mt-1">
                           {translations.correctAnswer}:{" "}
-                          {question.options.find((opt: any) => opt.id === question.correctAnswer)?.text}
+                          {question.options.find((opt: QuizOption) => opt.id === question.correctAnswer)?.text}
                         </p>
                       )}
                     </div>
@@ -177,7 +198,7 @@ export default function QuizPage() {
             onValueChange={handleSelectAnswer}
             className="space-y-4"
           >
-            {currentQuestionData.options.map((option: any) => (
+            {currentQuestionData.options.map((option: QuizOption) => (
               <div key={option.id} className="flex items-center space-x-2">
                 <RadioGroupItem value={option.id} id={`option-${option.id}`} />
                 <Label htmlFor={`option-${option.id}`} className="flex-1">
@@ -214,11 +235,11 @@ export default function QuizPage() {
 }
 
 // Function to get quiz data based on ID and language
-function getQuizData(id: string, language: string) {
+function getQuizData(id: string, language: string): QuizData | undefined {
   // This would typically come from an API or database
   // For demonstration, we'll include content for all languages
 
-  const quizContents: Record<string, Record<string, any>> = {
+  const quizContents: Record<string, Record<string, QuizData>> = {
     "1": {
       en: {
         id: 1,

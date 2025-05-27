@@ -31,7 +31,7 @@ interface TranslationManagerProps {
 }
 
 export function TranslationManager({ initialItems = [], onSave, readOnly = false }: TranslationManagerProps) {
-  const { language, t } = useLanguage()
+  const { t } = useLanguage()
   const { toast } = useToast()
   const [items, setItems] = useState<TranslationItem[]>(initialItems)
   const [activeTab, setActiveTab] = useState<string>("lessons")
@@ -274,7 +274,7 @@ export function TranslationManager({ initialItems = [], onSave, readOnly = false
                     )}
 
                     {Object.entries(item.translations)
-                      .filter(([_, translation]) => !translation.isVerified)
+                      .filter(([_langInFilter, translation]) => !translation.isVerified)
                       .map(([lang]) => (
                         <Button
                           key={`verify-${lang}`}
