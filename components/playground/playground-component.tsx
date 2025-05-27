@@ -463,18 +463,18 @@ export default function PlaygroundComponent() {
                 <CardHeader className="bg-gradient-to-r from-blue-500 to-cyan-600 text-white">
                   <CardTitle>Response</CardTitle>
                 </CardHeader>
-                <CardContent className="pt-6">
-                  {error && (
-                    <div className="mb-4 p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-md text-red-600 dark:text-red-400 text-sm flex items-start">
-                      <AlertCircle className="h-4 w-4 mr-2 mt-0.5 flex-shrink-0" />
-                      <div>
-                        <p className="font-medium">Error:</p>
-                        <p>{error}</p>
+                <CardContent>
+                  <div className="min-h-[200px] p-4 border rounded-md bg-white dark:bg-gray-800 shadow-inner overflow-auto">
+                    {error && (
+                      <div className="mb-4 p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-md text-red-600 dark:text-red-400 text-sm flex items-start">
+                        <AlertCircle className="h-4 w-4 mr-2 mt-0.5 flex-shrink-0" />
+                        <div>
+                          <p className="font-medium">Error:</p>
+                          <p>{error}</p>
+                        </div>
                       </div>
-                    </div>
-                  )}
+                    )}
 
-                  <div className="min-h-[300px] p-4 border rounded-md bg-white dark:bg-gray-800 shadow-inner overflow-auto">
                     {isLoading ? (
                       <div className="flex flex-col items-center justify-center h-full">
                         <div className="relative w-16 h-16">
