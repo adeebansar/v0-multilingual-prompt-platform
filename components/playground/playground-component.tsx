@@ -577,6 +577,11 @@ export default function PlaygroundComponent() {
                 <TabsTrigger value="technical">Technical</TabsTrigger>
                 <TabsTrigger value="business">Business</TabsTrigger>
                 <TabsTrigger value="academic">Academic</TabsTrigger>
+                <TabsTrigger value="marketing">Marketing</TabsTrigger>
+                <TabsTrigger value="healthcare">Healthcare</TabsTrigger>
+                <TabsTrigger value="legal">Legal</TabsTrigger>
+                <TabsTrigger value="education">Education</TabsTrigger>
+                <TabsTrigger value="career">Career</TabsTrigger>
               </TabsList>
             </Tabs>
           </div>
@@ -590,6 +595,186 @@ export default function PlaygroundComponent() {
                 </CardHeader>
                 <CardContent className="grid gap-4">
                   {templates.general.map((template, i) => (
+                    <Card key={i} className="p-4">
+                      <h3 className="font-medium mb-2">{template.title}</h3>
+                      <p className="text-sm text-muted-foreground mb-4">{template.prompt}</p>
+                      <Button variant="outline" size="sm" onClick={() => handleUseTemplate(template.prompt)}>
+                        Use Template
+                      </Button>
+                    </Card>
+                  ))}
+                </CardContent>
+              </Card>
+            )}
+
+            {activeTemplateCategory === "creative" && (
+              <Card>
+                <CardHeader>
+                  <CardTitle>Creative Templates</CardTitle>
+                  <CardDescription>Templates for creative writing and storytelling</CardDescription>
+                </CardHeader>
+                <CardContent className="grid gap-4">
+                  {templates.creative.map((template, i) => (
+                    <Card key={i} className="p-4">
+                      <h3 className="font-medium mb-2">{template.title}</h3>
+                      <p className="text-sm text-muted-foreground mb-4">{template.prompt}</p>
+                      <Button variant="outline" size="sm" onClick={() => handleUseTemplate(template.prompt)}>
+                        Use Template
+                      </Button>
+                    </Card>
+                  ))}
+                </CardContent>
+              </Card>
+            )}
+
+            {activeTemplateCategory === "technical" && (
+              <Card>
+                <CardHeader>
+                  <CardTitle>Technical Templates</CardTitle>
+                  <CardDescription>Templates for programming and technical tasks</CardDescription>
+                </CardHeader>
+                <CardContent className="grid gap-4">
+                  {templates.technical.map((template, i) => (
+                    <Card key={i} className="p-4">
+                      <h3 className="font-medium mb-2">{template.title}</h3>
+                      <p className="text-sm text-muted-foreground mb-4">{template.prompt}</p>
+                      <Button variant="outline" size="sm" onClick={() => handleUseTemplate(template.prompt)}>
+                        Use Template
+                      </Button>
+                    </Card>
+                  ))}
+                </CardContent>
+              </Card>
+            )}
+
+            {activeTemplateCategory === "business" && (
+              <Card>
+                <CardHeader>
+                  <CardTitle>Business Templates</CardTitle>
+                  <CardDescription>Templates for business analysis and planning</CardDescription>
+                </CardHeader>
+                <CardContent className="grid gap-4">
+                  {templates.business.map((template, i) => (
+                    <Card key={i} className="p-4">
+                      <h3 className="font-medium mb-2">{template.title}</h3>
+                      <p className="text-sm text-muted-foreground mb-4">{template.prompt}</p>
+                      <Button variant="outline" size="sm" onClick={() => handleUseTemplate(template.prompt)}>
+                        Use Template
+                      </Button>
+                    </Card>
+                  ))}
+                </CardContent>
+              </Card>
+            )}
+
+            {activeTemplateCategory === "academic" && (
+              <Card>
+                <CardHeader>
+                  <CardTitle>Academic Templates</CardTitle>
+                  <CardDescription>Templates for research and academic writing</CardDescription>
+                </CardHeader>
+                <CardContent className="grid gap-4">
+                  {templates.academic.map((template, i) => (
+                    <Card key={i} className="p-4">
+                      <h3 className="font-medium mb-2">{template.title}</h3>
+                      <p className="text-sm text-muted-foreground mb-4">{template.prompt}</p>
+                      <Button variant="outline" size="sm" onClick={() => handleUseTemplate(template.prompt)}>
+                        Use Template
+                      </Button>
+                    </Card>
+                  ))}
+                </CardContent>
+              </Card>
+            )}
+
+            {activeTemplateCategory === "marketing" && (
+              <Card>
+                <CardHeader>
+                  <CardTitle>Marketing Templates</CardTitle>
+                  <CardDescription>Templates for marketing and promotion</CardDescription>
+                </CardHeader>
+                <CardContent className="grid gap-4">
+                  {templates.marketing.map((template, i) => (
+                    <Card key={i} className="p-4">
+                      <h3 className="font-medium mb-2">{template.title}</h3>
+                      <p className="text-sm text-muted-foreground mb-4">{template.prompt}</p>
+                      <Button variant="outline" size="sm" onClick={() => handleUseTemplate(template.prompt)}>
+                        Use Template
+                      </Button>
+                    </Card>
+                  ))}
+                </CardContent>
+              </Card>
+            )}
+
+            {activeTemplateCategory === "healthcare" && (
+              <Card>
+                <CardHeader>
+                  <CardTitle>Healthcare Templates</CardTitle>
+                  <CardDescription>Templates for medical and healthcare contexts</CardDescription>
+                </CardHeader>
+                <CardContent className="grid gap-4">
+                  {templates.healthcare.map((template, i) => (
+                    <Card key={i} className="p-4">
+                      <h3 className="font-medium mb-2">{template.title}</h3>
+                      <p className="text-sm text-muted-foreground mb-4">{template.prompt}</p>
+                      <Button variant="outline" size="sm" onClick={() => handleUseTemplate(template.prompt)}>
+                        Use Template
+                      </Button>
+                    </Card>
+                  ))}
+                </CardContent>
+              </Card>
+            )}
+
+            {activeTemplateCategory === "legal" && (
+              <Card>
+                <CardHeader>
+                  <CardTitle>Legal Templates</CardTitle>
+                  <CardDescription>Templates for legal documents and analysis</CardDescription>
+                </CardHeader>
+                <CardContent className="grid gap-4">
+                  {templates.legal.map((template, i) => (
+                    <Card key={i} className="p-4">
+                      <h3 className="font-medium mb-2">{template.title}</h3>
+                      <p className="text-sm text-muted-foreground mb-4">{template.prompt}</p>
+                      <Button variant="outline" size="sm" onClick={() => handleUseTemplate(template.prompt)}>
+                        Use Template
+                      </Button>
+                    </Card>
+                  ))}
+                </CardContent>
+              </Card>
+            )}
+
+            {activeTemplateCategory === "education" && (
+              <Card>
+                <CardHeader>
+                  <CardTitle>Education Templates</CardTitle>
+                  <CardDescription>Templates for teaching and educational content</CardDescription>
+                </CardHeader>
+                <CardContent className="grid gap-4">
+                  {templates.education.map((template, i) => (
+                    <Card key={i} className="p-4">
+                      <h3 className="font-medium mb-2">{template.title}</h3>
+                      <p className="text-sm text-muted-foreground mb-4">{template.prompt}</p>
+                      <Button variant="outline" size="sm" onClick={() => handleUseTemplate(template.prompt)}>
+                        Use Template
+                      </Button>
+                    </Card>
+                  ))}
+                </CardContent>
+              </Card>
+            )}
+
+            {activeTemplateCategory === "career" && (
+              <Card>
+                <CardHeader>
+                  <CardTitle>Career Templates</CardTitle>
+                  <CardDescription>Templates for job applications and career development</CardDescription>
+                </CardHeader>
+                <CardContent className="grid gap-4">
+                  {templates.career.map((template, i) => (
                     <Card key={i} className="p-4">
                       <h3 className="font-medium mb-2">{template.title}</h3>
                       <p className="text-sm text-muted-foreground mb-4">{template.prompt}</p>

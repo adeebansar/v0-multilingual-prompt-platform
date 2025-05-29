@@ -28,16 +28,23 @@ export function SuggestedTemplates({ templates, onUseTemplate, onViewCategory }:
             key={i}
             className="p-3 bg-yellow-50 dark:bg-yellow-900/10 rounded-md border border-yellow-100 dark:border-yellow-800"
           >
-            <h5 className="font-medium text-sm mb-1">{template.title}</h5>
-            <p className="text-xs text-gray-600 dark:text-gray-400 mb-2">{template.prompt}</p>
-            <Button
-              variant="outline"
-              size="sm"
-              className="text-xs h-7 bg-white dark:bg-gray-800"
-              onClick={() => onUseTemplate(template.prompt)}
-            >
-              {translations.useTemplate || "Use Template"}
-            </Button>
+            <h5 className="font-medium text-sm mb-1">{template.title || `Template ${i + 1}`}</h5>
+            <p className="text-xs text-gray-600 dark:text-gray-400 mb-2 line-clamp-3">{template.prompt}</p>
+            <div className="flex justify-between items-center">
+              <Button
+                variant="outline"
+                size="sm"
+                className="text-xs h-7 bg-white dark:bg-gray-800"
+                onClick={() => onUseTemplate(template.prompt)}
+              >
+                {translations.useTemplate || "Use Template"}
+              </Button>
+              {template.category && (
+                <span className="text-xs text-yellow-600 dark:text-yellow-400">
+                  {template.category.charAt(0).toUpperCase() + template.category.slice(1)}
+                </span>
+              )}
+            </div>
           </div>
         ))}
 
