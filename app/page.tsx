@@ -21,7 +21,7 @@ import {
   Users,
   type LucideIcon,
 } from "lucide-react"
-import { HeroSection } from "@/components/hero-section/index"
+import { HeroSection } from "@/components/hero-section/hero-section-component"
 
 export default function HomePage() {
   const { translations } = useLanguage()
@@ -63,7 +63,7 @@ export default function HomePage() {
 
   return (
     <div>
-      {/* Hero Section - Now properly code-split */}
+      {/* Hero Section */}
       <HeroSection />
 
       {/* Featured Lesson Section */}

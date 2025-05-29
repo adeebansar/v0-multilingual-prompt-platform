@@ -4,8 +4,11 @@ import { safeDynamicImport, createFallback } from "@/lib/dynamic-import-utils"
 const HeroSectionFallback = createFallback("HeroSection")
 
 // Properly import the hero section with error handling
-export const HeroSection = safeDynamicImport(() => import("../hero-section"), {
-  loading: HeroSectionFallback,
-  ssr: true,
-  displayName: "HeroSection",
-})
+export const DynamicHeroSection = safeDynamicImport(
+  () => import("./hero-section-component").then((mod) => ({ default: mod.HeroSection })),
+  {
+    loading: HeroSectionFallback,
+    ssr: true,
+    displayName: "HeroSection",
+  },
+)
