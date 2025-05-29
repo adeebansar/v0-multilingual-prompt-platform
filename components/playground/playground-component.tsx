@@ -32,6 +32,7 @@ import {
   XCircle,
   HelpCircle,
 } from "lucide-react"
+import { SuggestedTemplates } from "./suggested-templates"
 
 export default function PlaygroundComponent() {
   const { translations, language, setLanguage } = useLanguage()
@@ -162,7 +163,7 @@ export default function PlaygroundComponent() {
       })
     } catch (err) {
       console.error("Error:", err)
-      const errorMessage = err instanceof Error ? err.message : String(err);
+      const errorMessage = err instanceof Error ? err.message : String(err)
       setError(errorMessage || "Something went wrong")
       toast({
         title: "Error",
@@ -451,6 +452,16 @@ export default function PlaygroundComponent() {
                           ))}
                         </ul>
                       </div>
+                    )}
+                    {promptAnalysis.relevantTemplates && promptAnalysis.relevantTemplates.length > 0 && (
+                      <SuggestedTemplates
+                        templates={promptAnalysis.relevantTemplates}
+                        onUseTemplate={handleUseTemplate}
+                        onViewCategory={(category) => {
+                          setActiveTemplateCategory(category)
+                          setActiveTab("templates")
+                        }}
+                      />
                     )}
                   </CardContent>
                 </Card>
