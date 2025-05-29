@@ -1,5 +1,5 @@
-import PlaygroundComponent from "@/components/playground/playground-component"
+import SimplePlayground from "@/components/playground/simple-playground"
 
 export default function PlaygroundPage() {
-  return <PlaygroundComponent />
+  return <SimplePlayground />
 }
