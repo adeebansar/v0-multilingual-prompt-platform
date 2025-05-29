@@ -7,6 +7,17 @@ import Link from "next/link"
 import { Award, BookOpen, CheckCircle, Clock } from "lucide-react"
 import { useLanguage } from "@/components/language-provider"
 
+interface QuizListItem {
+  id: number;
+  title: string;
+  description: string;
+  questions: number;
+  timeEstimate: string;
+  difficultyKey: string; // e.g., "difficultyBeginner", "difficultyIntermediate"
+  completed: boolean;
+  progress: number;
+}
+
 export default function QuizzesPage() {
   const { translations, language } = useLanguage()
 
@@ -26,7 +37,7 @@ export default function QuizzesPage() {
   )
 }
 
-function QuizCard({ quiz, translations }: { quiz: any; translations: Record<string, string> }) {
+function QuizCard({ quiz, translations }: { quiz: QuizListItem; translations: Record<string, string> }) {
   return (
     <Card className="flex flex-col h-full">
       <CardHeader>
@@ -72,8 +83,8 @@ function QuizCard({ quiz, translations }: { quiz: any; translations: Record<stri
 }
 
 // Function to get localized quizzes
-function getLocalizedQuizzes(language: string) {
-  const quizData = {
+function getLocalizedQuizzes(language: string): QuizListItem[] {
+  const quizData: Record<string, QuizListItem[]> = {
     en: [
       {
         id: 1,

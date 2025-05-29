@@ -104,7 +104,7 @@ export default function SettingsPage() {
               </div>
               <div className="space-y-2">
                 <Label htmlFor="language">{translations.language}</Label>
-                <Select value={language} onValueChange={(value: any) => setLanguage(value)}>
+                <Select value={language} onValueChange={(value: Language) => setLanguage(value as Language)}>
                   <SelectTrigger>
                     <SelectValue placeholder="Select language" />
                   </SelectTrigger>
@@ -115,6 +115,11 @@ export default function SettingsPage() {
                     <SelectItem value="de">Deutsch</SelectItem>
                     <SelectItem value="zh">中文</SelectItem>
                     <SelectItem value="ja">日本語</SelectItem>
+                    <SelectItem value="ar">العربية</SelectItem>
+                    <SelectItem value="hi">हिन्दी</SelectItem>
+                    <SelectItem value="ur">اردو</SelectItem>
+                    <SelectItem value="te">తెలుగు</SelectItem>
+                    <SelectItem value="ta">தமிழ்</SelectItem>
                   </SelectContent>
                 </Select>
               </div>

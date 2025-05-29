@@ -2,7 +2,7 @@ import { NextResponse } from "next/server"
 import type { NextRequest } from "next/server"
 
 // This middleware is currently disabled to allow open access to the application
-export function middleware(request: NextRequest) {
+export function middleware(_request: NextRequest) {
   // Authentication is disabled for now
   return NextResponse.next()
 

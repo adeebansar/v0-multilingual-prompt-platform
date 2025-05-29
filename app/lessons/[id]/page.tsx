@@ -130,12 +130,25 @@ export default function LessonPage() {
   )
 }
 
+// Define types for lesson structure
+interface LessonStep {
+  title: string;
+  content: string;
+}
+
+interface LessonContent {
+  title: string;
+  description: string;
+  steps: LessonStep[];
+  resources: string[];
+}
+
 // Function to get lesson data based on language and lesson ID
-function getLessonData(id: string, language: string) {
+function getLessonData(id: string, language: string): LessonContent {
   // This would typically come from an API or database
   // For demonstration, we'll include content for a few languages and lessons
 
-  const lessonContents: Record<string, Record<string, any>> = {
+  const lessonContents: Record<string, Record<string, LessonContent>> = {
     "1": {
       en: {
         title: "Introduction to Prompt Engineering",

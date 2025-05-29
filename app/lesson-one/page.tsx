@@ -28,7 +28,7 @@ export default function LessonOnePage() {
             <h2>What is Prompt Engineering?</h2>
             <p>
               Prompt engineering is the process of designing and refining inputs to AI models to get desired outputs.
-              It's a crucial skill for working with large language models.
+              It&apos;s a crucial skill for working with large language models.
             </p>
 
             <h3>Why Prompt Engineering Matters</h3>
