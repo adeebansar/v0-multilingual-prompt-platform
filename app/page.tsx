@@ -21,7 +21,7 @@ import {
   Users,
   type LucideIcon,
 } from "lucide-react"
-import { HeroSection } from "@/components/hero-section/hero-section-component"
+import { HeroSection } from "@/components/hero-section"
 
 export default function HomePage() {
   const { translations } = useLanguage()
@@ -63,10 +63,8 @@ export default function HomePage() {
 
   return (
     <div>
-      {/* Hero Section */}
       <HeroSection />
 
-      {/* Featured Lesson Section */}
       <section className="py-12 container">
         <div className="flex items-center justify-between mb-6">
           <h2 className="text-2xl font-bold">{translations.featuredLesson}</h2>
@@ -119,7 +117,6 @@ export default function HomePage() {
         </Card>
       </section>
 
-      {/* Platform Features Section */}
       <section className="py-12 bg-muted/50">
         <div className="container px-4 md:px-6">
           <h2 className="text-2xl font-bold text-center mb-12">
@@ -166,7 +163,6 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Popular Lessons Section */}
       <section className="py-8 container">
         <h2 className="text-2xl font-bold mb-6">{translations.popularLessons || "Popular Lessons"}</h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
