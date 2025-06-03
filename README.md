@@ -1,30 +1,97 @@
-# Multilingual prompt platform
+# ScriptShift Prompt Master
 
-*Automatically synced with your [v0.dev](https://v0.dev) deployments*
+A comprehensive multilingual platform for learning and mastering AI prompt engineering. Built with Next.js 15, featuring 11 language support, real-time prompt analysis, and interactive learning modules.
 
-[![Deployed on Vercel](https://img.shields.io/badge/Deployed%20on-Vercel-black?style=for-the-badge&logo=vercel)](https://vercel.com/adystates-8179s-projects/v0-multilingual-prompt-platform)
-[![Built with v0](https://img.shields.io/badge/Built%20with-v0.dev-black?style=for-the-badge)](https://v0.dev/chat/projects/djX3S3ktOuq)
+## Features
 
-## Overview
+### 🌍 Multilingual Support
+- 11 languages: English, Spanish, French, German, Chinese, Japanese, Arabic, Hindi, Urdu, Telugu, Tamil
+- RTL support for Arabic and Urdu
+- Automatic language detection
+- Browser language preference detection
 
-This repository will stay in sync with your deployed chats on [v0.dev](https://v0.dev).
-Any changes you make to your deployed app will be automatically pushed to this repository from [v0.dev](https://v0.dev).
+### 🎯 Interactive Playground
+- Real-time prompt analysis and scoring
+- AI model integration (GPT-3.5, GPT-4, GPT-4o)
+- Temperature control and parameter tuning
+- Usage tracking and cost estimation
+- Prompt history and favorites
 
-## Deployment
+### 📚 Learning System
+- Structured lessons with progress tracking
+- Interactive quizzes and assessments
+- Step-by-step tutorials
+- Knowledge retention tracking
 
-Your project is live at:
+### 🎨 Template Library
+- 10+ categories of enhanced prompt templates
+- Real-world examples across domains
+- Business, Creative, Technical, Academic templates
+- Healthcare, Legal, Education, Career templates
 
-**[https://vercel.com/adystates-8179s-projects/v0-multilingual-prompt-platform](https://vercel.com/adystates-8179s-projects/v0-multilingual-prompt-platform)**
+### 🔧 Advanced Features
+- Dark/Light theme support
+- Responsive design for all devices
+- Error boundaries and fallback handling
+- Local storage for preferences
+- Comprehensive testing framework
 
-## Build your app
+## Tech Stack
 
-Continue building your app on:
+- **Framework**: Next.js 15 with App Router
+- **Language**: TypeScript
+- **Styling**: Tailwind CSS
+- **UI Components**: shadcn/ui
+- **State Management**: Zustand
+- **AI Integration**: OpenAI API
+- **Internationalization**: Custom i18n system
 
-**[https://v0.dev/chat/projects/djX3S3ktOuq](https://v0.dev/chat/projects/djX3S3ktOuq)**
+## Getting Started
 
-## How It Works
+1. Clone the repository
+2. Install dependencies: `npm install`
+3. Set up environment variables:
+   \`\`\`
+   OPENAI_API_KEY=your_openai_api_key
+   \`\`\`
+4. Run the development server: `npm run dev`
+5. Open [http://localhost:3000](http://localhost:3000)
 
-1. Create and modify your project using [v0.dev](https://v0.dev)
-2. Deploy your chats from the v0 interface
-3. Changes are automatically pushed to this repository
-4. Vercel deploys the latest version from this repository
+## Project Structure
+
+\`\`\`
+├── app/                    # Next.js app directory
+│   ├── api/               # API routes
+│   ├── lessons/           # Lesson pages
+│   ├── playground/        # Interactive playground
+│   ├── quizzes/          # Quiz system
+│   └── settings/         # User settings
+├── components/            # React components
+│   ├── ui/               # shadcn/ui components
+│   ├── playground/       # Playground components
+│   └── lessons/          # Lesson components
+├── lib/                  # Utility libraries
+│   ├── i18n.ts          # Internationalization
+│   ├── templates.ts     # Prompt templates
+│   └── prompt-analyzer.ts # Prompt analysis
+└── contexts/            # React contexts
+\`\`\`
+
+## API Endpoints
+
+- `/api/generate` - AI text generation
+- `/api/translate` - Translation service
+- `/api/detect-language` - Language detection
+- `/api/check-api-key` - API key validation
+
+## Contributing
+
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes
+4. Add tests if applicable
+5. Submit a pull request
+
+## License
+
+MIT License - see LICENSE file for details
