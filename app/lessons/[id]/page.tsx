@@ -21,8 +21,12 @@ import {
   Lightbulb,
   Trophy,
   AlertCircle,
+  Play,
+  Video,
 } from "lucide-react"
 import { useLanguage } from "@/components/language-provider"
+import { VideoPlayer } from "@/components/video/video-player"
+import { VideoNotes } from "@/components/video/video-notes"
 
 interface QuizQuestion {
   id: number
@@ -50,6 +54,8 @@ export default function LessonPage() {
   const [exerciseAnswer, setExerciseAnswer] = useState("")
   const [showQuizResults, setShowQuizResults] = useState(false)
   const [showExerciseHints, setShowExerciseHints] = useState(false)
+  const [videoProgress, setVideoProgress] = useState(0)
+  const [currentVideoTime, setCurrentVideoTime] = useState(0)
 
   const lessonId = params.id as string
   const lessonData = getLessonData(lessonId, language)
@@ -85,8 +91,17 @@ export default function LessonPage() {
     return Math.round((correctAnswers / (lessonData.quiz?.questions.length || 1)) * 100)
   }
 
+  const handleVideoProgress = (progress: number) => {
+    setVideoProgress(progress)
+  }
+
+  const handleVideoComplete = () => {
+    // Mark video as completed, unlock next content, etc.
+    console.log("Video completed!")
+  }
+
   return (
-    <div className="container py-8 max-w-4xl">
+    <div className="container py-8 max-w-6xl">
       <Button variant="ghost" onClick={() => router.push("/lessons")} className="mb-4">
         <ArrowLeft className={`${language === "ar" || language === "ur" ? "transform-flip" : ""} mr-2 h-4 w-4`} />
         {translations.back} {translations.lessons}
@@ -98,6 +113,12 @@ export default function LessonPage() {
           <Badge className={getLevelColor(lessonData.level)}>{lessonData.level}</Badge>
           <Badge variant="outline">{lessonData.duration}</Badge>
           <Badge variant="outline">{lessonData.category}</Badge>
+          {lessonData.video && (
+            <Badge variant="outline" className="flex items-center gap-1">
+              <Video className="h-3 w-3" />
+              Video Available
+            </Badge>
+          )}
         </div>
         <h1 className="text-3xl font-bold mb-2">{lessonData.title}</h1>
         <p className="text-muted-foreground text-lg">{lessonData.description}</p>
@@ -133,228 +154,321 @@ export default function LessonPage() {
         </Card>
       )}
 
-      {/* Main Content Tabs */}
-      <Tabs defaultValue="content" className="mb-8">
-        <TabsList className="grid w-full grid-cols-4">
-          <TabsTrigger value="content" className="flex items-center gap-2">
-            <BookOpen className="h-4 w-4" />
-            Content
-          </TabsTrigger>
-          <TabsTrigger value="quiz" className="flex items-center gap-2">
-            <Brain className="h-4 w-4" />
-            Quiz
-          </TabsTrigger>
-          <TabsTrigger value="exercise" className="flex items-center gap-2">
-            <Code className="h-4 w-4" />
-            Exercise
-          </TabsTrigger>
-          <TabsTrigger value="resources" className="flex items-center gap-2">
-            <Lightbulb className="h-4 w-4" />
-            Resources
-          </TabsTrigger>
-        </TabsList>
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        {/* Main Content */}
+        <div className="lg:col-span-2">
+          <Tabs defaultValue="video" className="mb-8">
+            <TabsList className="grid w-full grid-cols-5">
+              <TabsTrigger value="video" className="flex items-center gap-2">
+                <Play className="h-4 w-4" />
+                Video
+              </TabsTrigger>
+              <TabsTrigger value="content" className="flex items-center gap-2">
+                <BookOpen className="h-4 w-4" />
+                Content
+              </TabsTrigger>
+              <TabsTrigger value="quiz" className="flex items-center gap-2">
+                <Brain className="h-4 w-4" />
+                Quiz
+              </TabsTrigger>
+              <TabsTrigger value="exercise" className="flex items-center gap-2">
+                <Code className="h-4 w-4" />
+                Exercise
+              </TabsTrigger>
+              <TabsTrigger value="resources" className="flex items-center gap-2">
+                <Lightbulb className="h-4 w-4" />
+                Resources
+              </TabsTrigger>
+            </TabsList>
 
-        {/* Lesson Content */}
-        <TabsContent value="content">
-          <Card>
-            <CardContent className="pt-6">
-              <div
-                className="prose dark:prose-invert max-w-none"
-                dangerouslySetInnerHTML={{
-                  __html: lessonData.steps[activeStep].content,
-                }}
-              />
-
-              {/* Interactive Examples */}
-              {lessonData.steps[activeStep].examples && (
-                <div className="mt-8">
-                  <h3 className="text-lg font-semibold mb-4">Interactive Examples</h3>
-                  <div className="space-y-4">
-                    {lessonData.steps[activeStep].examples.map((example, index) => (
-                      <Card key={index} className="bg-muted/50">
-                        <CardContent className="pt-4">
-                          <h4 className="font-medium mb-2">{example.title}</h4>
-                          <div className="bg-background p-4 rounded-md border mb-3">
-                            <p className="text-sm font-medium text-muted-foreground mb-2">Prompt:</p>
-                            <p className="font-mono text-sm">{example.prompt}</p>
-                          </div>
-                          <div className="bg-background p-4 rounded-md border">
-                            <p className="text-sm font-medium text-muted-foreground mb-2">Expected Output:</p>
-                            <p className="text-sm">{example.output}</p>
-                          </div>
-                        </CardContent>
-                      </Card>
-                    ))}
-                  </div>
-                </div>
+            {/* Video Tab */}
+            <TabsContent value="video">
+              {lessonData.video ? (
+                <VideoPlayer
+                  videoId={lessonData.video.id}
+                  title={lessonData.video.title}
+                  description={lessonData.video.description}
+                  duration={lessonData.video.duration}
+                  thumbnail={lessonData.video.thumbnail}
+                  videoUrl={lessonData.video.url}
+                  chapters={lessonData.video.chapters}
+                  onProgress={handleVideoProgress}
+                  onComplete={handleVideoComplete}
+                />
+              ) : (
+                <Card>
+                  <CardContent className="pt-6 text-center py-12">
+                    <Video className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
+                    <p className="text-muted-foreground">No video available for this lesson.</p>
+                  </CardContent>
+                </Card>
               )}
-            </CardContent>
-          </Card>
-        </TabsContent>
+            </TabsContent>
 
-        {/* Quiz Tab */}
-        <TabsContent value="quiz">
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Brain className="h-5 w-5" />
-                Knowledge Check
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              {lessonData.quiz ? (
-                <div className="space-y-6">
-                  {lessonData.quiz.questions.map((question, index) => (
-                    <div key={question.id} className="space-y-3">
-                      <h3 className="font-medium">
-                        {index + 1}. {question.question}
-                      </h3>
-                      <RadioGroup
-                        value={quizAnswers[index]?.toString()}
-                        onValueChange={(value) =>
-                          setQuizAnswers((prev) => ({ ...prev, [index]: Number.parseInt(value) }))
-                        }
-                      >
-                        {question.options.map((option, optionIndex) => (
-                          <div key={optionIndex} className="flex items-center space-x-2">
-                            <RadioGroupItem value={optionIndex.toString()} id={`q${index}-${optionIndex}`} />
-                            <Label htmlFor={`q${index}-${optionIndex}`}>{option}</Label>
-                          </div>
+            {/* Lesson Content */}
+            <TabsContent value="content">
+              <Card>
+                <CardContent className="pt-6">
+                  <div
+                    className="prose dark:prose-invert max-w-none"
+                    dangerouslySetInnerHTML={{
+                      __html: lessonData.steps[activeStep].content,
+                    }}
+                  />
+
+                  {/* Interactive Examples */}
+                  {lessonData.steps[activeStep].examples && (
+                    <div className="mt-8">
+                      <h3 className="text-lg font-semibold mb-4">Interactive Examples</h3>
+                      <div className="space-y-4">
+                        {lessonData.steps[activeStep].examples.map((example, index) => (
+                          <Card key={index} className="bg-muted/50">
+                            <CardContent className="pt-4">
+                              <h4 className="font-medium mb-2">{example.title}</h4>
+                              <div className="bg-background p-4 rounded-md border mb-3">
+                                <p className="text-sm font-medium text-muted-foreground mb-2">Prompt:</p>
+                                <p className="font-mono text-sm">{example.prompt}</p>
+                              </div>
+                              <div className="bg-background p-4 rounded-md border">
+                                <p className="text-sm font-medium text-muted-foreground mb-2">Expected Output:</p>
+                                <p className="text-sm">{example.output}</p>
+                              </div>
+                            </CardContent>
+                          </Card>
                         ))}
-                      </RadioGroup>
+                      </div>
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+            </TabsContent>
 
-                      {showQuizResults && (
-                        <div
-                          className={`p-3 rounded-md ${
-                            quizAnswers[index] === question.correctAnswer
-                              ? "bg-green-50 border border-green-200 dark:bg-green-950 dark:border-green-800"
-                              : "bg-red-50 border border-red-200 dark:bg-red-950 dark:border-red-800"
-                          }`}
-                        >
-                          <div className="flex items-center gap-2 mb-2">
-                            {quizAnswers[index] === question.correctAnswer ? (
-                              <CheckCircle2 className="h-4 w-4 text-green-600" />
-                            ) : (
-                              <AlertCircle className="h-4 w-4 text-red-600" />
-                            )}
-                            <span className="font-medium">
-                              {quizAnswers[index] === question.correctAnswer ? "Correct!" : "Incorrect"}
-                            </span>
-                          </div>
-                          <p className="text-sm">{question.explanation}</p>
+            {/* Quiz Tab */}
+            <TabsContent value="quiz">
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Brain className="h-5 w-5" />
+                    Knowledge Check
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  {lessonData.quiz ? (
+                    <div className="space-y-6">
+                      {lessonData.quiz.questions.map((question, index) => (
+                        <div key={question.id} className="space-y-3">
+                          <h3 className="font-medium">
+                            {index + 1}. {question.question}
+                          </h3>
+                          <RadioGroup
+                            value={quizAnswers[index]?.toString()}
+                            onValueChange={(value) =>
+                              setQuizAnswers((prev) => ({ ...prev, [index]: Number.parseInt(value) }))
+                            }
+                          >
+                            {question.options.map((option, optionIndex) => (
+                              <div key={optionIndex} className="flex items-center space-x-2">
+                                <RadioGroupItem value={optionIndex.toString()} id={`q${index}-${optionIndex}`} />
+                                <Label htmlFor={`q${index}-${optionIndex}`}>{option}</Label>
+                              </div>
+                            ))}
+                          </RadioGroup>
+
+                          {showQuizResults && (
+                            <div
+                              className={`p-3 rounded-md ${
+                                quizAnswers[index] === question.correctAnswer
+                                  ? "bg-green-50 border border-green-200 dark:bg-green-950 dark:border-green-800"
+                                  : "bg-red-50 border border-red-200 dark:bg-red-950 dark:border-red-800"
+                              }`}
+                            >
+                              <div className="flex items-center gap-2 mb-2">
+                                {quizAnswers[index] === question.correctAnswer ? (
+                                  <CheckCircle2 className="h-4 w-4 text-green-600" />
+                                ) : (
+                                  <AlertCircle className="h-4 w-4 text-red-600" />
+                                )}
+                                <span className="font-medium">
+                                  {quizAnswers[index] === question.correctAnswer ? "Correct!" : "Incorrect"}
+                                </span>
+                              </div>
+                              <p className="text-sm">{question.explanation}</p>
+                            </div>
+                          )}
                         </div>
+                      ))}
+
+                      {!showQuizResults ? (
+                        <Button onClick={handleQuizSubmit} className="w-full">
+                          Submit Quiz
+                        </Button>
+                      ) : (
+                        <Card className="bg-primary/5 border-primary/20">
+                          <CardContent className="pt-4">
+                            <div className="flex items-center gap-2 mb-2">
+                              <Trophy className="h-5 w-5 text-primary" />
+                              <span className="font-semibold">Quiz Results</span>
+                            </div>
+                            <p>You scored {getQuizScore()}% on this quiz!</p>
+                          </CardContent>
+                        </Card>
                       )}
                     </div>
-                  ))}
-
-                  {!showQuizResults ? (
-                    <Button onClick={handleQuizSubmit} className="w-full">
-                      Submit Quiz
-                    </Button>
                   ) : (
-                    <Card className="bg-primary/5 border-primary/20">
-                      <CardContent className="pt-4">
-                        <div className="flex items-center gap-2 mb-2">
-                          <Trophy className="h-5 w-5 text-primary" />
-                          <span className="font-semibold">Quiz Results</span>
-                        </div>
-                        <p>You scored {getQuizScore()}% on this quiz!</p>
-                      </CardContent>
-                    </Card>
+                    <p className="text-muted-foreground">No quiz available for this lesson.</p>
                   )}
-                </div>
-              ) : (
-                <p className="text-muted-foreground">No quiz available for this lesson.</p>
-              )}
-            </CardContent>
-          </Card>
-        </TabsContent>
+                </CardContent>
+              </Card>
+            </TabsContent>
 
-        {/* Exercise Tab */}
-        <TabsContent value="exercise">
+            {/* Exercise Tab */}
+            <TabsContent value="exercise">
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Code className="h-5 w-5" />
+                    Practical Exercise
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  {lessonData.exercise ? (
+                    <div className="space-y-6">
+                      <div>
+                        <h3 className="font-semibold mb-2">{lessonData.exercise.title}</h3>
+                        <p className="text-muted-foreground mb-4">{lessonData.exercise.description}</p>
+                      </div>
+
+                      <div className="bg-muted p-4 rounded-md">
+                        <h4 className="font-medium mb-2">Your Task:</h4>
+                        <p className="text-sm">{lessonData.exercise.prompt}</p>
+                      </div>
+
+                      <div>
+                        <Label htmlFor="exercise-answer" className="text-base font-medium">
+                          Your Answer:
+                        </Label>
+                        <Textarea
+                          id="exercise-answer"
+                          placeholder="Write your prompt here..."
+                          value={exerciseAnswer}
+                          onChange={(e) => setExerciseAnswer(e.target.value)}
+                          className="mt-2 min-h-[120px]"
+                        />
+                      </div>
+
+                      <div className="flex gap-2">
+                        <Button variant="outline" onClick={() => setShowExerciseHints(!showExerciseHints)}>
+                          {showExerciseHints ? "Hide" : "Show"} Hints
+                        </Button>
+                        <Button>Check Answer</Button>
+                      </div>
+
+                      {showExerciseHints && (
+                        <Card className="bg-blue-50 border-blue-200 dark:bg-blue-950 dark:border-blue-800">
+                          <CardContent className="pt-4">
+                            <h4 className="font-medium mb-2">Hints:</h4>
+                            <ul className="space-y-1">
+                              {lessonData.exercise.hints.map((hint, index) => (
+                                <li key={index} className="text-sm flex items-start gap-2">
+                                  <span className="text-blue-600 mt-1">•</span>
+                                  <span>{hint}</span>
+                                </li>
+                              ))}
+                            </ul>
+                          </CardContent>
+                        </Card>
+                      )}
+                    </div>
+                  ) : (
+                    <p className="text-muted-foreground">No exercise available for this lesson.</p>
+                  )}
+                </CardContent>
+              </Card>
+            </TabsContent>
+
+            {/* Resources Tab */}
+            <TabsContent value="resources">
+              <Card>
+                <CardContent className="pt-6">
+                  <h3 className="text-lg font-medium mb-4">Additional Resources</h3>
+                  <div className="space-y-4">
+                    {lessonData.resources.map((resource, index) => (
+                      <div
+                        key={index}
+                        className="flex items-center gap-3 p-3 border rounded-md hover:bg-muted/50 transition-colors"
+                      >
+                        <BookOpen className="h-4 w-4 text-muted-foreground" />
+                        <span>{resource}</span>
+                      </div>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+            </TabsContent>
+          </Tabs>
+        </div>
+
+        {/* Sidebar */}
+        <div className="space-y-6">
+          {/* Video Notes */}
+          {lessonData.video && (
+            <VideoNotes
+              videoId={lessonData.video.id}
+              currentTime={currentVideoTime}
+              onSeekTo={(time) => {
+                // This would seek the video to the specified time
+                console.log("Seek to:", time)
+              }}
+            />
+          )}
+
+          {/* Lesson Progress */}
           <Card>
             <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Code className="h-5 w-5" />
-                Practical Exercise
-              </CardTitle>
+              <CardTitle className="text-lg">Lesson Progress</CardTitle>
             </CardHeader>
             <CardContent>
-              {lessonData.exercise ? (
-                <div className="space-y-6">
-                  <div>
-                    <h3 className="font-semibold mb-2">{lessonData.exercise.title}</h3>
-                    <p className="text-muted-foreground mb-4">{lessonData.exercise.description}</p>
-                  </div>
-
-                  <div className="bg-muted p-4 rounded-md">
-                    <h4 className="font-medium mb-2">Your Task:</h4>
-                    <p className="text-sm">{lessonData.exercise.prompt}</p>
-                  </div>
-
-                  <div>
-                    <Label htmlFor="exercise-answer" className="text-base font-medium">
-                      Your Answer:
-                    </Label>
-                    <Textarea
-                      id="exercise-answer"
-                      placeholder="Write your prompt here..."
-                      value={exerciseAnswer}
-                      onChange={(e) => setExerciseAnswer(e.target.value)}
-                      className="mt-2 min-h-[120px]"
-                    />
-                  </div>
-
-                  <div className="flex gap-2">
-                    <Button variant="outline" onClick={() => setShowExerciseHints(!showExerciseHints)}>
-                      {showExerciseHints ? "Hide" : "Show"} Hints
-                    </Button>
-                    <Button>Check Answer</Button>
-                  </div>
-
-                  {showExerciseHints && (
-                    <Card className="bg-blue-50 border-blue-200 dark:bg-blue-950 dark:border-blue-800">
-                      <CardContent className="pt-4">
-                        <h4 className="font-medium mb-2">Hints:</h4>
-                        <ul className="space-y-1">
-                          {lessonData.exercise.hints.map((hint, index) => (
-                            <li key={index} className="text-sm flex items-start gap-2">
-                              <span className="text-blue-600 mt-1">•</span>
-                              <span>{hint}</span>
-                            </li>
-                          ))}
-                        </ul>
-                      </CardContent>
-                    </Card>
-                  )}
-                </div>
-              ) : (
-                <p className="text-muted-foreground">No exercise available for this lesson.</p>
-              )}
-            </CardContent>
-          </Card>
-        </TabsContent>
-
-        {/* Resources Tab */}
-        <TabsContent value="resources">
-          <Card>
-            <CardContent className="pt-6">
-              <h3 className="text-lg font-medium mb-4">Additional Resources</h3>
               <div className="space-y-4">
-                {lessonData.resources.map((resource, index) => (
-                  <div
-                    key={index}
-                    className="flex items-center gap-3 p-3 border rounded-md hover:bg-muted/50 transition-colors"
-                  >
-                    <BookOpen className="h-4 w-4 text-muted-foreground" />
-                    <span>{resource}</span>
+                <div>
+                  <div className="flex justify-between text-sm mb-2">
+                    <span>Video Progress</span>
+                    <span>{Math.round(videoProgress)}%</span>
                   </div>
-                ))}
+                  <Progress value={videoProgress} className="h-2" />
+                </div>
+                <div>
+                  <div className="flex justify-between text-sm mb-2">
+                    <span>Overall Progress</span>
+                    <span>{progress}%</span>
+                  </div>
+                  <Progress value={progress} className="h-2" />
+                </div>
               </div>
             </CardContent>
           </Card>
-        </TabsContent>
-      </Tabs>
+
+          {/* Quick Actions */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-lg">Quick Actions</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-2">
+              <Button variant="outline" className="w-full justify-start">
+                <BookOpen className="h-4 w-4 mr-2" />
+                Download Transcript
+              </Button>
+              <Button variant="outline" className="w-full justify-start">
+                <Video className="h-4 w-4 mr-2" />
+                Download Video
+              </Button>
+              <Button variant="outline" className="w-full justify-start">
+                <Target className="h-4 w-4 mr-2" />
+                Practice Exercises
+              </Button>
+            </CardContent>
+          </Card>
+        </div>
+      </div>
 
       {/* Navigation */}
       <div className="flex justify-between mt-8">
@@ -392,7 +506,7 @@ function getLevelColor(level: string) {
   }
 }
 
-// Enhanced lesson data with interactive elements
+// Enhanced lesson data with video content
 function getLessonData(id: string, language: string) {
   const lessonContents: Record<string, any> = {
     "1": {
@@ -407,6 +521,44 @@ function getLessonData(id: string, language: string) {
         "Identify common prompt patterns and structures",
         "Practice creating your first effective prompts",
       ],
+      video: {
+        id: "intro-prompt-engineering",
+        title: "Introduction to Prompt Engineering",
+        description: "A comprehensive introduction to the fundamentals of prompt engineering",
+        duration: "12:34",
+        thumbnail: "/placeholder.svg?height=180&width=320",
+        url: "/placeholder.mp4", // This would be a real video URL
+        chapters: [
+          {
+            id: "what-is-prompt-engineering",
+            title: "What is Prompt Engineering?",
+            startTime: 0,
+            endTime: 180,
+            description: "Introduction to the concept and importance",
+          },
+          {
+            id: "basic-principles",
+            title: "Basic Principles",
+            startTime: 180,
+            endTime: 360,
+            description: "Core principles of effective prompting",
+          },
+          {
+            id: "common-patterns",
+            title: "Common Patterns",
+            startTime: 360,
+            endTime: 540,
+            description: "Exploring typical prompt structures",
+          },
+          {
+            id: "practical-examples",
+            title: "Practical Examples",
+            startTime: 540,
+            endTime: 754,
+            description: "Real-world prompt examples and analysis",
+          },
+        ],
+      },
       steps: [
         {
           title: "What is Prompt Engineering?",
