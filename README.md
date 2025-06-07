@@ -95,4 +95,3 @@ A comprehensive multilingual platform for learning and mastering AI prompt engin
 ## License
 
 MIT License - see LICENSE file for details
-\`\`\`
