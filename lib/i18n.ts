@@ -1,5 +1,7 @@
 export type Language = "en" | "es" | "fr" | "de" | "zh" | "ja" | "ar" | "hi" | "ur" | "te" | "ta"
 
+export const SUPPORTED_LANGUAGES: Language[] = ["en", "es", "fr", "de", "zh", "ja", "ar", "hi", "ur", "te", "ta"]
+
 export const LANGUAGE_NAMES: Record<Language, string> = {
   en: "English",
   es: "Español",
